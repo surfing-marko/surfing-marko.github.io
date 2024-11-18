@@ -9,28 +9,34 @@
     <button id="surflyButton">Start Surfly</button>
 
     <script>
-        // Ensure the script runs only after the DOM is fully loaded
+        // Load the Surfly script and initialize it when the page loads
+        (function(s, u, r, f, l, y) {
+            s[f] = s[f] || { init: function() { s[f].q = arguments } };
+            l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
+            l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
+        })(window, document, 'script', 'Surfly');
+
+        var settings = {
+            widget_key: 'ce0dea2fd2c942c3a014bf53df5b975d',
+        };
+
+        // Initialize Surfly on page load
         document.addEventListener('DOMContentLoaded', function() {
+            Surfly.init(settings, function(initResult) {
+                if (initResult.success) {
+                    console.log("Surfly initialized successfully.");
+                } else {
+                    console.log("Surfly was unable to initialize properly.");
+                }
+            });
+
+            // Add the button functionality to start a Surfly session
             document.getElementById('surflyButton').addEventListener('click', function() {
-                (function(s, u, r, f, l, y) {
-                    s[f] = s[f] || { init: function() { s[f].q = arguments } };
-                    l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
-                    l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
-                })(window, document, 'script', 'Surfly');
-
-                var settings = {
-                    widget_key: 'ce0dea2fd2c942c3a014bf53df5b975d',
-                };
-
-                Surfly.init(settings, function(initResult) {
-                    if (initResult.success) {
-                        if (!Surfly.isInsideSession) {
-                            Surfly.button();
-                        }
-                    } else {
-                        console.log("Surfly was unable to initialize properly.");
-                    }
-                });
+                if (Surfly.isInsideSession) {
+                    console.log("Already inside a Surfly session.");
+                } else {
+                    Surfly.button(); // Triggers the Surfly button functionality
+                }
             });
         });
     </script>
