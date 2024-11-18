@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surfly Button</title>
+    <title>Surfly Direct Start</title>
 </head>
 <body>
-    <button id="surflyButton">Start Surfly</button>
+    <button id="surflyButton">Start Surfly Session v2</button>
 
     <script>
         // Load the Surfly script and initialize it when the page loads
@@ -17,25 +17,25 @@
         })(window, document, 'script', 'Surfly');
 
         var settings = {
-            widget_key: 'ce0dea2fd2c942c3a014bf53df5b975d',
+            widget_key: 'ce0dea2fd2c942c3a014bf53df5b975d', // Replace with your actual widget key
         };
 
-        // Initialize Surfly on page load
+        // Ensure the Surfly script is ready before adding button functionality
         document.addEventListener('DOMContentLoaded', function() {
             Surfly.init(settings, function(initResult) {
                 if (initResult.success) {
                     console.log("Surfly initialized successfully.");
+
+                    // Attach the click event to directly start a session
+                    document.getElementById('surflyButton').addEventListener('click', function() {
+                        if (!Surfly.isInsideSession) {
+                            Surfly.startSession(); // Directly starts a Surfly session
+                        } else {
+                            console.log("You are already inside a Surfly session.");
+                        }
+                    });
                 } else {
                     console.log("Surfly was unable to initialize properly.");
-                }
-            });
-
-            // Add the button functionality to start a Surfly session
-            document.getElementById('surflyButton').addEventListener('click', function() {
-                if (Surfly.isInsideSession) {
-                    console.log("Already inside a Surfly session.");
-                } else {
-                    Surfly.button(); // Triggers the Surfly button functionality
                 }
             });
         });
