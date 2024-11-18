@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surfly Button</title>
+</head>
+<body>
+    <button id="Start Surfly Button">Start Surfly</button>
+
+    <script>
+        document.getElementById('surflyButton').addEventListener('click', function() {
+            (function(s, u, r, f, l, y) {
+                s[f] = s[f] || { init: function() { s[f].q = arguments } };
+                l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
+                l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
+            })(window, document, 'script', 'Surfly');
+
+            var settings = {
+                widget_key: 'ce0dea2fd2c942c3a014bf53df5b975d',
+            };
+
+            Surfly.init(settings, function(initResult) {
+                if (initResult.success) {
+                    if (!Surfly.isInsideSession) {
+                        Surfly.button();
+                    }
+                } else {
+                    console.log("Surfly was unable to initialize properly.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
