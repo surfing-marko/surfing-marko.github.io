@@ -6,28 +6,31 @@
     <title>Surfly Button</title>
 </head>
 <body>
-    <button id="Start Surfly Button">Start Surfly</button>
+    <button id="surflyButton">Start Surfly</button>
 
     <script>
-        document.getElementById('surflyButton').addEventListener('click', function() {
-            (function(s, u, r, f, l, y) {
-                s[f] = s[f] || { init: function() { s[f].q = arguments } };
-                l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
-                l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
-            })(window, document, 'script', 'Surfly');
+        // Ensure the script runs only after the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('surflyButton').addEventListener('click', function() {
+                (function(s, u, r, f, l, y) {
+                    s[f] = s[f] || { init: function() { s[f].q = arguments } };
+                    l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
+                    l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
+                })(window, document, 'script', 'Surfly');
 
-            var settings = {
-                widget_key: 'ce0dea2fd2c942c3a014bf53df5b975d',
-            };
+                var settings = {
+                    widget_key: 'ce0dea2fd2c942c3a014bf53df5b975d',
+                };
 
-            Surfly.init(settings, function(initResult) {
-                if (initResult.success) {
-                    if (!Surfly.isInsideSession) {
-                        Surfly.button();
+                Surfly.init(settings, function(initResult) {
+                    if (initResult.success) {
+                        if (!Surfly.isInsideSession) {
+                            Surfly.button();
+                        }
+                    } else {
+                        console.log("Surfly was unable to initialize properly.");
                     }
-                } else {
-                    console.log("Surfly was unable to initialize properly.");
-                }
+                });
             });
         });
     </script>
