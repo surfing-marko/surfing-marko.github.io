@@ -6,10 +6,10 @@
     <title>Surfly Direct Start</title>
 </head>
 <body>
-    <button id="surflyButton">Start Surfly Session v2</button>
+    <button id="surflyButton">Start Surfly Session v3</button>
 
     <script>
-        // Load the Surfly script and initialize it when the page loads
+        // Load the Surfly script
         (function(s, u, r, f, l, y) {
             s[f] = s[f] || { init: function() { s[f].q = arguments } };
             l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
@@ -20,18 +20,19 @@
             widget_key: 'ce0dea2fd2c942c3a014bf53df5b975d', // Replace with your actual widget key
         };
 
-        // Ensure the Surfly script is ready before adding button functionality
+        // Initialize Surfly and attach functionality to the button
         document.addEventListener('DOMContentLoaded', function() {
             Surfly.init(settings, function(initResult) {
                 if (initResult.success) {
                     console.log("Surfly initialized successfully.");
 
-                    // Attach the click event to directly start a session
+                    // Attach click event to the button
                     document.getElementById('surflyButton').addEventListener('click', function() {
                         if (!Surfly.isInsideSession) {
-                            Surfly.startSession(); // Directly starts a Surfly session
+                            // Start a session directly by creating a Surfly session link
+                            Surfly.start(); // This will directly start a Surfly session
                         } else {
-                            console.log("You are already inside a Surfly session.");
+                            console.log("Already inside a Surfly session.");
                         }
                     });
                 } else {
