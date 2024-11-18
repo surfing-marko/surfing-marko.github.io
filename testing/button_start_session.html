@@ -1,42 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surfly Session Starter</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Surfly Co-browse</title>
 </head>
 <body>
-    <button id="startSurfly">Start Surfly Session v5</button>
+	<!-- Text hotlink for starting Surfly -->
+	<a href="#" id="startSurfly">Co-browse</a>
 
-    <script>
-        // Load the Surfly script asynchronously
-        (function(s, u, r, f, l, y) {
-            s[f] = s[f] || { init: function() { s[f].q = arguments } };
-            l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
-            l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
-        })(window, document, 'script', 'Surfly');
+	<script>
+		// Load the Surfly script asynchronously
+		(function(s, u, r, f, l, y) {
+			s[f] = s[f] || { init: function() { s[f].q = arguments } };
+			l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
+			l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
+		})(window, document, 'script', 'Surfly');
 
-        // Wait for the DOM to be fully loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Surfly with your widget key
-            Surfly.init({ widget_key: 'ce0dea2fd2c942c3a014bf53df5b975d' }, function(initResult) {
-                if (initResult.success) {
-                    console.log("Surfly initialized successfully.");
+		// Wait for the DOM to be fully loaded
+		document.addEventListener('DOMContentLoaded', function() {
+			// Initialize Surfly with your widget key
+			Surfly.init({ widget_key: 'ce0dea2fd2c942c3a014bf53df5b975d' }, function(initResult) {
+				if (initResult.success) {
+					console.log("Surfly initialized successfully.");
 
-                    // Add click event listener to the button
-                    document.getElementById('startSurfly').addEventListener('click', function() {
-                        if (!Surfly.isInsideSession) {
-                            // Start a Surfly session directly
-                            Surfly.session().startLeader();
-                        } else {
-                            console.log("Already inside a Surfly session.");
-                        }
-                    });
-                } else {
-                    console.error("Surfly failed to initialize.");
-                }
-            });
-        });
-    </script>
+					// Add click event listener to the link
+					document.getElementById('startSurfly').addEventListener('click', function(event) {
+						event.preventDefault(); // Prevent default link behavior
+						if (!Surfly.isInsideSession) {
+							// Start a Surfly session directly
+							Surfly.session().startLeader();
+						} else {
+							console.log("Already inside a Surfly session.");
+						}
+					});
+				} else {
+					console.error("Surfly failed to initialize.");
+				}
+			});
+		});
+	</script>
 </body>
 </html>
