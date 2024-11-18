@@ -3,47 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surfly Direct Start</title>
+    <title>Surfly Session Starter</title>
 </head>
 <body>
-    <button id="surflyButton">Start Surfly Session v4</button>
+    <button id="startSurfly">Start Surfly Session v5</button>
 
     <script>
-        // Load the Surfly script
+        // Load the Surfly script asynchronously
         (function(s, u, r, f, l, y) {
             s[f] = s[f] || { init: function() { s[f].q = arguments } };
             l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
             l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
         })(window, document, 'script', 'Surfly');
 
-        var settings = {
-            widget_key: 'ce0dea2fd2c942c3a014bf53df5b975d', // Replace with your actual widget key
-        };
-
-        // Initialize Surfly and attach functionality to the button
+        // Wait for the DOM to be fully loaded
         document.addEventListener('DOMContentLoaded', function() {
-            Surfly.init(settings, function(initResult) {
+            // Initialize Surfly with your widget key
+            Surfly.init({ widget_key: 'ce0dea2fd2c942c3a014bf53df5b975d' }, function(initResult) {
                 if (initResult.success) {
                     console.log("Surfly initialized successfully.");
 
-                    // Attach click event to the button
-                    document.getElementById('surflyButton').addEventListener('click', function() {
+                    // Add click event listener to the button
+                    document.getElementById('startSurfly').addEventListener('click', function() {
                         if (!Surfly.isInsideSession) {
-                            // Directly create and start a session
-                            Surfly.createSession({}, function(sessionResult) {
-                                if (sessionResult.success) {
-                                    console.log("Session started successfully.");
-                                    window.location.href = sessionResult.url; // Redirect to the session URL
-                                } else {
-                                    console.error("Failed to start the session:", sessionResult.error);
-                                }
-                            });
+                            // Start a Surfly session directly
+                            Surfly.session().startLeader();
                         } else {
                             console.log("Already inside a Surfly session.");
                         }
                     });
                 } else {
-                    console.error("Surfly was unable to initialize properly.");
+                    console.error("Surfly failed to initialize.");
                 }
             });
         });
