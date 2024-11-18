@@ -6,7 +6,7 @@
     <title>Surfly Direct Start</title>
 </head>
 <body>
-    <button id="surflyButton">Start Surfly Session v3</button>
+    <button id="surflyButton">Start Surfly Session v4</button>
 
     <script>
         // Load the Surfly script
@@ -29,14 +29,21 @@
                     // Attach click event to the button
                     document.getElementById('surflyButton').addEventListener('click', function() {
                         if (!Surfly.isInsideSession) {
-                            // Start a session directly by creating a Surfly session link
-                            Surfly.start(); // This will directly start a Surfly session
+                            // Directly create and start a session
+                            Surfly.createSession({}, function(sessionResult) {
+                                if (sessionResult.success) {
+                                    console.log("Session started successfully.");
+                                    window.location.href = sessionResult.url; // Redirect to the session URL
+                                } else {
+                                    console.error("Failed to start the session:", sessionResult.error);
+                                }
+                            });
                         } else {
                             console.log("Already inside a Surfly session.");
                         }
                     });
                 } else {
-                    console.log("Surfly was unable to initialize properly.");
+                    console.error("Surfly was unable to initialize properly.");
                 }
             });
         });
