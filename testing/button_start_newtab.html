@@ -17,25 +17,25 @@
             l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
         })(window, document, 'script', 'Surfly');
 
-        // Wait for the DOM to load before adding event listeners
+        // Wait for the DOM to be fully loaded
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize Surfly with your widget key
             Surfly.init({ widget_key: 'ce0dea2fd2c942c3a014bf53df5b975d' }, function(initResult) {
                 if (initResult.success) {
                     console.log("Surfly initialized successfully.");
 
-                    // Add a click event listener to the start button
+                    // Add click event listener to the link
                     document.getElementById('startSurfly').addEventListener('click', function(event) {
                         event.preventDefault(); // Prevent default link behavior
 
                         if (!Surfly.isInsideSession) {
-                            // Start a Surfly session and open a new tab
+                            // Start a Surfly session
                             Surfly.session().startLeader().then(function(session) {
                                 console.log("Surfly session started successfully.");
                                 // Open a new tab within the session
                                 session.openTab('https://www.example.com');
                             }).catch(function(error) {
-                                console.error("Error starting Surfly session:", error);
+                                console.error("Failed to start the Surfly session:", error);
                             });
                         } else {
                             console.log("Already inside a Surfly session.");
