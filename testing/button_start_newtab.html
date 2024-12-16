@@ -1,53 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surfly Open Tab Example</title>
-    <script>
-        (function(s, u, r, f, l, y) {
-            s[f] = s[f] || { init: function() { s[f].q = arguments } };
-            l = u.createElement(r);
-            y = u.getElementsByTagName(r)[0];
-            l.async = 1;
-            l.src = 'https://surfly.com/surfly.js';
-            y.parentNode.insertBefore(l, y);
-        })(window, document, 'script', 'Surfly');
-
-        var settings = {
-            widget_key: '6e2bf5fe08de41ae9f24a75e37c2249a',
-        };
-
-        function initializeSurfly() {
-            Surfly.init(settings, function(initResult) {
-                if (initResult.success) {
-                    console.log("Surfly initialized successfully.");
-                    if (!Surfly.isInsideSession) {
-                        Surfly.button();
-                    }
-                } else {
-                    console.log("Surfly was unable to initialize properly.");
-                }
-            });
-        }
-
-        function openSurflyTab() {
-            if (Surfly.isInsideSession) {
-                Surfly.session.openTab('https://example.com', {
-                    active: true
-                }).then(function(tab) {
-                    console.log('New tab opened:', tab);
-                }).catch(function(error) {
-                    console.error('Error opening tab:', error);
-                });
-            } else {
-                alert("You need to be inside a Surfly session to open a tab.");
-            }
-        }
-    </script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Surfly Co-browse</title>
 </head>
-<body onload="initializeSurfly()">
-    <h1>Surfly Open Tab Example</h1>
-    <button onclick="openSurflyTab()">Open Example.com in Surfly Session</button>
+<body>
+	<!-- Text hotlink for starting Surfly -->
+	<a href="#" id="startSurfly" onclick="startCobrowsing()">Co-browse</a>
+
+	<script>
+		// Load the Surfly script asynchronously
+		(function(s, u, r, f, l, y) {
+			s[f] = s[f] || { init: function() { s[f].q = arguments } };
+			l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
+			l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
+		})(window, document, 'script', 'Surfly');
+
+		// Wait for the DOM to be fully loaded
+		document.addEventListener('DOMContentLoaded', function() {
+			// Initialize Surfly with your widget key
+			Surfly.init({ widget_key: '6e2bf5fe08de41ae9f24a75e37c2249a' }, function(initResult) {
+				if (initResult.success) {
+					console.log("Surfly initialized successfully.");
+
+					// Add click event listener to the link
+					document.getElementById('startSurfly').addEventListener('click', function(event) {
+						event.preventDefault(); // Prevent default link behavior
+                        if (init.success && !Surfly.isInsideSession) {
+                        console.log("init success");
+                        SurflySession = Surfly.session().create()
+                        .on("session_created", function (session, event) {
+                            SurflySession.startLeader();
+                        })
+                        .on('session_loaded', function (session, event) {
+                            console.log("Session loaded successfully");
+                            SurflySession.openTab("https://www.example.com"); 
+                        })
+						} else {
+							console.log("Already inside a Surfly session.");
+						}
+					});
+				} else {
+					console.error("Surfly failed to initialize.");
+				}
+			});
+		});
+	</script>
 </body>
 </html>
