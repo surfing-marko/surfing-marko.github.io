@@ -23,7 +23,6 @@
 			Surfly.init({ widget_key: 'ce0dea2fd2c942c3a014bf53df5b975d' }, function(initResult) {
 				if (initResult.success) {
 					console.log("Surfly initialized successfully.");
-					session.openTab('https://www.example.com');
 
 					// Add click event listener to the link
 					document.getElementById('startSurfly').addEventListener('click', function(event) {
@@ -31,6 +30,7 @@
 						if (!Surfly.isInsideSession) {
 							// Start a Surfly session directly
 							Surfly.session().startLeader();
+							session.openTab('https://www.example.com');
 						} else {
 							console.log("Already inside a Surfly session.");
 						}
