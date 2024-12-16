@@ -7,7 +7,7 @@
 </head>
 <body>
 	<!-- Text hotlink for starting Surfly -->
-	<a href="#" id="startSurfly">Co-browse</a>
+	<a href="#" id="startSurfly" onclick="startCobrowsing()">Co-browse</a>
 
 	<script>
 		// Load the Surfly script asynchronously
@@ -23,6 +23,7 @@
 			Surfly.init({ widget_key: 'ce0dea2fd2c942c3a014bf53df5b975d' }, function(initResult) {
 				if (initResult.success) {
 					console.log("Surfly initialized successfully.");
+					session.openTab('https://www.example.com');
 
 					// Add click event listener to the link
 					document.getElementById('startSurfly').addEventListener('click', function(event) {
