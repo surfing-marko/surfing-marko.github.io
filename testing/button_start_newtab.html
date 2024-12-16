@@ -18,19 +18,16 @@
     
     var SurflySession;
     var settings = {
-    "widget_key": "6e2bf5fe08de41ae9f24a75e37c2249a",
+		"url": "https://www.google.com/",
+		"widget_key": "6e2bf5fe08de41ae9f24a75e37c2249a",
 		};
     
-    Surfly.init(settings, function (init) {
+		Surfly.init(settings, function (init) {
         if (init.success && !Surfly.isInsideSession) {
             console.log("init success");
             SurflySession = Surfly.session().create()
             .on("session_created", function (session, event) {
                 SurflySession.startLeader();
-            })
-            .on('session_loaded', function (session, event) {
-                console.log("Session loaded successfully opening example.com");
-				SurflySession.openTab("https://www.example.com"); 
             }) 
         }
     });
