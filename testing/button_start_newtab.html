@@ -18,7 +18,6 @@
     
     var SurflySession;
     var settings = {
-	"url": "https://www.example.com/",
     "widget_key": "6e2bf5fe08de41ae9f24a75e37c2249a",
 		};
     
@@ -30,7 +29,7 @@
                 SurflySession.startLeader();
             })
             .on('session_loaded', function (session, event) {
-                console.log("Session loaded successfully");
+                console.log("Session loaded successfully opening example.com");
 				SurflySession.openTab("https://www.example.com"); 
             }) 
         }
