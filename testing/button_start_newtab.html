@@ -30,12 +30,14 @@
 
                         if (!Surfly.isInsideSession) {
                             // Start a Surfly session
-                            Surfly.session().startLeader().then(function(session) {
-                                console.log("Surfly session started successfully.");
-                                // Open a new tab within the session
-                                session.openTab('https://www.example.com');
-                            }).catch(function(error) {
-                                console.error("Failed to start the Surfly session:", error);
+                            Surfly.session().startLeader(function(session) {
+                                if (session.success) {
+                                    console.log("Surfly session started successfully.");
+                                    // Open a new tab within the session
+                                    session.openTab('https://www.example.com');
+                                } else {
+                                    console.error("Failed to start the Surfly session:", session.error);
+                                }
                             });
                         } else {
                             console.log("Already inside a Surfly session.");
