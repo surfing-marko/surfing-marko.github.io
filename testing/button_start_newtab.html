@@ -3,50 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surfly Integration</title>
-</head>
-<body>
-    <!-- Button to start Surfly session -->
-    <a href="#" id="startSurfly">Start Surfly Session</a>
-
+    <title>Surfly Open Tab Example</title>
     <script>
-        // Load the Surfly script asynchronously
         (function(s, u, r, f, l, y) {
             s[f] = s[f] || { init: function() { s[f].q = arguments } };
-            l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
-            l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
+            l = u.createElement(r);
+            y = u.getElementsByTagName(r)[0];
+            l.async = 1;
+            l.src = 'https://surfly.com/surfly.js';
+            y.parentNode.insertBefore(l, y);
         })(window, document, 'script', 'Surfly');
 
-        // Wait for the DOM to load before adding event listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Surfly with your widget key
-            Surfly.init({ widget_key: '6e2bf5fe08de41ae9f24a75e37c2249a' }, function(initResult) {
+        var settings = {
+            widget_key: '6e2bf5fe08de41ae9f24a75e37c2249a',
+        };
+
+        function initializeSurfly() {
+            Surfly.init(settings, function(initResult) {
                 if (initResult.success) {
                     console.log("Surfly initialized successfully.");
-
-                    // Add click event listener to the link
-                    document.getElementById('startSurfly').addEventListener('click', function(event) {
-                        event.preventDefault(); // Prevent default link behavior
-
-                        if (!Surfly.isInsideSession) {
-                            try {
-                                // Start a Surfly session and open a tab
-                                const session = Surfly.session();
-                                session.startLeader();
-                                console.log("Surfly session started successfully.");
-                                session.openTab('https://www.example.com');
-                            } catch (error) {
-                                console.error("Error starting Surfly session or opening tab:", error);
-                            }
-                        } else {
-                            console.log("Already inside a Surfly session.");
-                        }
-                    });
+                    if (!Surfly.isInsideSession) {
+                        Surfly.button();
+                    }
                 } else {
-                    console.error("Surfly failed to initialize:", initResult.error);
+                    console.log("Surfly was unable to initialize properly.");
                 }
             });
-        });
+        }
+
+        function openSurflyTab() {
+            if (Surfly.isInsideSession) {
+                Surfly.session.openTab('https://example.com', {
+                    active: true
+                }).then(function(tab) {
+                    console.log('New tab opened:', tab);
+                }).catch(function(error) {
+                    console.error('Error opening tab:', error);
+                });
+            } else {
+                alert("You need to be inside a Surfly session to open a tab.");
+            }
+        }
     </script>
+</head>
+<body onload="initializeSurfly()">
+    <h1>Surfly Open Tab Example</h1>
+    <button onclick="openSurflyTab()">Open Example.com in Surfly Session</button>
 </body>
 </html>
