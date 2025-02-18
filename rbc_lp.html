@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+	<title>RBC Landing Page Demo</title>
+	<style>
+	body
+	{
+		margin: 0;
+		min-height: 100vh;
+		font-family: 'Open Sans', sans-serif;
+		background-color: #f5f5f5;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.header
+	{
+		background-color: #032d52;
+		padding: 20px;
+		display: flex;
+		align-items: center;
+	}
+
+	.logo
+	{
+		height: 40px;
+	}
+
+	.main-content
+	{
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 40px 20px;
+		text-align: center;
+	}
+
+	.hero-image
+	{
+		max-width: 600px;
+		width: 90%;
+		border-radius: 8px;
+		margin-bottom: 30px;
+	}
+
+	.title
+	{
+		color: #032d52;
+		font-size: 2em;
+		margin-bottom: 20px;
+	}
+
+	.start-btn
+	{
+		padding: 15px 40px;
+		font-size: 1.2rem;
+		background-color: #75bcdc;
+		color: white;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+		transition: background-color 0.3s ease;
+		font-weight: 600;
+	}
+
+	.start-btn:hover
+	{
+		background-color: #5da8c9;
+	}
+
+	.popup-c,
+	.popup-p
+	{
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		background: rgba(0, 0, 0, 0.6);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		visibility: hidden;
+		opacity: 0;
+		transition: opacity 0.3s ease, visibility 0.3s ease;
+		z-index:999999999999999;
+	}
+
+	.popup-content
+	{
+	background-color: white;
+	padding: 2rem;
+	border-radius: 10px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+	text-align: center;
+	width: 300px;
+	}
+
+	.popup-text
+	{
+	margin-bottom: 2rem;
+	font-size: 1.2rem;
+	}
+
+	.popup-pin-code {
+	margin-bottom: 2rem;
+	font-size: 2rem;
+	}
+
+	.popup-buttons
+	{
+	display: flex;
+	justify-content: space-around;
+	}
+
+	.popup-btn
+	{
+	padding: 0.8rem 1.5rem;
+	font-size: 1rem;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+	}
+
+	.cancel-btn
+	{
+	background-color: #dc3545;
+	color: white;
+	}
+
+	.cancel-btn:hover
+	{
+	background-color: #c82333;
+	}
+
+	.continue-btn
+	{
+	background-color: #28a745;
+	color: white;
+	}
+
+	.continue-btn:hover
+	{
+	background-color: #218838;
+	}
+
+	.show
+	{
+	visibility: visible;
+	opacity: 1;
+	}
+	</style>
+</head>
+
+<body>
+	<header class="header">
+		<img src="https://cdn-icons-png.flaticon.com/512/8711/8711362.png" alt="RBC Logo" class="logo">
+	</header>
+
+	<main class="main-content">
+		<img src="https://smartcdn.gprod.postmedia.digital/financialpost/wp-content/uploads/2024/05/rbc2-0530-ph.jpg" 
+			 alt="RBC Demo" class="hero-image">
+		<h1 class="title">RBC Landing Page Demo</h1>
+		<button class="start-btn" onclick="showPopupConsent()">Start Session</button>
+	</main>
+
+	<!-- Hidden Consent Pop-Up -->
+	<div class="popup-c" id="popup-consent">
+	<div class="popup-content">
+	<p class="popup-text">Are you sure you want to start the session?</p>
+	<div class="popup-buttons">
+		<button class="popup-btn cancel-btn" onclick="hidePopupConsent()">Cancel</button>
+		<button class="popup-btn continue-btn" onclick="startCorowsing()">Continue</button>
+	</div>
+	</div>
+	</div>
+	<!-- Hidden Pin Pop-Up -->
+	<div class="popup-p" id="popup-pin">
+	<div class="popup-content">
+	<p class="popup-text">Please wait for your agent to join</p>
+	<p class="popup-pin-code" id="popup-pin-code"></p>
+	<div class="popup-buttons">
+		<button class="popup-btn cancel-btn" onclick="endSession()">End Session</button>
+	</div>
+	</div>
+	</div>
+
+	<script>
+	//POP UP JAVASSCRIPT
+
+	// Function to show the consent pop-up
+	function showPopupConsent() {
+	document.getElementById("popup-consent").classList.add("show");
+	}
+
+	// Function to hide the consent pop-up
+	function hidePopupConsent() {
+	document.getElementById("popup-consent").classList.remove("show");
+	}
+	// Function to show the pin pop-up
+	function showPopupPin() {
+	document.getElementById("popup-pin").classList.add("show");
+	}
+
+	// Function to hide the pin pop-up
+	function hidePopupPin() {
+	document.getElementById("popup-pin").classList.remove("show");
+	}
+
+	//SURFLY JAVASCRIPT
+
+	var SurflySession;
+	function startCorowsing()
+	{
+		// Hide consent popup when starting the session
+		hidePopupConsent();
+		
+		(function (s, u, r, f, l, y)
+		{
+			s[f] = s[f] || { init: function () { s[f].q = arguments } };
+			l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
+			l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
+		})
+		(window, document, 'script', 'Surfly');
+		var sessionPin;
+		var settings =
+		{
+			widget_key: "4e3d97b9f9c549b798eb8735a4b7c619",
+			block_until_agent_joins: false,
+			session_autorestore_enabled: false
+			//Disable the default Surfly pin code pop up
+		};
+
+		Surfly.init(settings, function (init)
+		{
+			if (init.success && !Surfly.isInsideSession)
+			{
+				console.log("init success");
+				SurflySession = Surfly.session().startLeader()
+				.on("session_created", function (session, event)
+				{
+					sessionPin = session.pin;
+					console.log("session pin:"+sessionPin);
+					document.querySelector(".popup-pin-code").innerText = sessionPin;
+					console.log(session.pin);
+					showPopupPin();
+				})
+				.on("session_loaded", function (session, event)
+				{
+				})
+				.on("participant_joined", function (session, event)
+				{
+					console.log("participant joined");
+					SurflySession.relocate("https://www.rbc.com", false);
+					hidePopupPin();
+				})
+			}
+		});
+	}
+
+	function endSession() {
+	SurflySession.end();
+	}
+	</script>
+</body>
+
+</html>
