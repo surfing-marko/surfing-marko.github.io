@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans" rel="stylesheet">
+	<title>Landing page</title>
+
+	<style type='text/css'>
+		html,
+		body {
+			min-height: 100vh;
+			min-width: 100vw;
+			padding: 0;
+			margin: 0;
+			box-sizing: border-box;
+			background-color: white;
+			font-family: "Open Sans", sans-serif;
+		}
+	</style>
+
+	<!--  This will render a script tag. We need this to mitigate the XSS attack risk  -->
+	<script id="landing-page-data"
+		type="application/json">{"title": "RBC Landing Page Demo", "text": "RBC Landing Page Demo", "image": "https://smartcdn.gprod.postmedia.digital/financialpost/wp-content/uploads/2024/05/rbc2-0530-ph.jpg", "slug": "rbc-marko", "start_url": "", "branding_logo_url": "https://cdn-icons-png.flaticon.com/512/8711/8711362.png", "branding_primary_color": "#75bcdc", "branding_secondary_color": "#032d52"}</script>
+
+	<script>
+		(function (s, u, r, f, l, y) {
+			s[f] = s[f] || { init: function () { s[f].q = arguments } };
+			l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
+			l.src = '/surfly.js'; y.parentNode.insertBefore(l, y);
+		})(window, document, 'script', 'Surfly');
+
+		window.WIDGET_KEY = "4e3d97b9f9c549b798eb8735a4b7c619";
+		window.LANDING_PAGE_DATA = JSON.parse(document.getElementById('landing-page-data').textContent);
+		window.LANDING_PAGE_SETTINGS_URL = "/landing/options/";
+		window.CAN_CUSTOMIZE = true;
+		window.sessionError = null;
+
+		let viewerJoined = false;
+		let session;
+		const settings = {
+			widget_key: window.WIDGET_KEY,
+			hide_until_agent_joins: true,
+			start_with_chat_open: false,
+			url: window.LANDING_PAGE_DATA.start_url,
+		};
+
+		if (!session) {
+			Surfly.init(settings, function (init) {
+				if (init.success) {
+					session = Surfly.listSessions()[0];
+
+					if (!session) {
+						session = Surfly.session().startLeader();
+					}
+
+					if (!Surfly.isInsideSession) {
+						session.on("session_created", function (session) {
+							window.PINCODE = session.pin;
+						}).on("participant_joined", function (session, event) {
+							if (event.clientIndex !== 0) {
+								viewerJoined = true;
+							}
+						}).on("error", function (_, error) {
+							window.sessionError = error;
+						});
+					}
+				}
+			});
+		}
+
+		// Ends session if user closes window and there's no viewer in the session
+		window.onbeforeunload = function () {
+			if (!viewerJoined) {
+				session.end();
+			}
+		};
+	</script>
+</head>
+
+<body>
+	<div id="landing-page"></div>
+	<script src="/static/bundles/dashboard/landing_page.f1520b0204a438db4faf.js"></script>
+</body>
+
+</html>
