@@ -291,14 +291,13 @@
 		{
 			if (init.success && !Surfly.isInsideSession)
 			{
-				console.log("init success");
+				console.log("Surfly initalized successfully");
 				SurflySession = Surfly.session().startLeader()
 				.on("session_created", function (session, event)
 				{
 					sessionPin = session.pin;
 					console.log("session pin:"+sessionPin);
 					document.querySelector(".popup-pin-code").innerText = sessionPin;
-					console.log(session.pin);
 					showPopupPin();
 				})
 				.on("session_loaded", function (session, event)
