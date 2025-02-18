@@ -281,10 +281,10 @@
 		var sessionPin;
 		var settings =
 		{
+			// Change the widget key to your own
 			widget_key: "4e3d97b9f9c549b798eb8735a4b7c619",
 			block_until_agent_joins: false,
 			session_autorestore_enabled: false
-			//Disable the default Surfly pin code pop up
 		};
 
 		Surfly.init(settings, function (init)
@@ -307,6 +307,7 @@
 				.on("participant_joined", function (session, event)
 				{
 					console.log("participant joined");
+					// Add your starting URL here
 					SurflySession.relocate("https://www.rbc.com", false);
 					hidePopupPin();
 				})
