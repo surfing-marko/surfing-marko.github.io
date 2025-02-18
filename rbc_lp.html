@@ -245,6 +245,17 @@
 		</div>
 	</div>
 
+	<!-- Hidden Consent Pop-Up -->
+	<!-- <div class="popup-c" id="popup-consent">
+	<div class="popup-content">
+	<p class="popup-text">Are you sure you want to start the session?</p>
+	<div class="popup-buttons">
+		<button class="popup-btn cancel-btn" onclick="hidePopupConsent()">Cancel</button>
+		<button class="popup-btn continue-btn" onclick="startCorowsing()">Continue</button>
+	</div>
+	</div>
+	</div> -->
+
 	<!-- Hidden Pin Pop-Up -->
 	<div class="popup-p" id="popup-pin">
 	<div class="popup-content">
@@ -257,11 +268,35 @@
 	</div>
 
 	<script>
+	//POP UP JAVASSCRIPT
+
+	// Function to show the consent pop-up
+	// function showPopupConsent() {
+	// document.getElementById("popup-consent").classList.add("show");
+	// }
+
+	// // Function to hide the consent pop-up
+	// function hidePopupConsent() {
+	// document.getElementById("popup-consent").classList.remove("show");
+	// }
+	// Function to show the pin pop-up
+	function showPopupPin() {
+	document.getElementById("popup-pin").classList.add("show");
+	}
+
+	// Function to hide the pin pop-up
+	function hidePopupPin() {
+	document.getElementById("popup-pin").classList.remove("show");
+	}
+
 	//SURFLY JAVASCRIPT
 
 	var SurflySession;
 	function startCorowsing()
 	{
+		// Hide consent popup when starting the session
+		// hidePopupConsent();
+		
 		(function (s, u, r, f, l, y)
 		{
 			s[f] = s[f] || { init: function () { s[f].q = arguments } };
