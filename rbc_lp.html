@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>RBC Remote Help Landing Page</title>
+	<title>RBC Remote Assistance Landing Page</title>
 	<style>
 	body
 	{
@@ -40,7 +40,6 @@
 		background-color: #0056b3;
 	}
 
-	.popup-c,
 	.popup-p
 	{
 		position: fixed;
@@ -244,18 +243,6 @@
 			<button class="start-btn" onclick="startCorowsing()">Start Session</button>
 		</div>
 	</div>
-
-	<!-- Hidden Consent Pop-Up -->
-	<!-- <div class="popup-c" id="popup-consent">
-	<div class="popup-content">
-	<p class="popup-text">Are you sure you want to start the session?</p>
-	<div class="popup-buttons">
-		<button class="popup-btn cancel-btn" onclick="hidePopupConsent()">Cancel</button>
-		<button class="popup-btn continue-btn" onclick="startCorowsing()">Continue</button>
-	</div>
-	</div>
-	</div> -->
-
 	<!-- Hidden Pin Pop-Up -->
 	<div class="popup-p" id="popup-pin">
 	<div class="popup-content">
@@ -269,16 +256,6 @@
 
 	<script>
 	//POP UP JAVASSCRIPT
-
-	// Function to show the consent pop-up
-	// function showPopupConsent() {
-	// document.getElementById("popup-consent").classList.add("show");
-	// }
-
-	// // Function to hide the consent pop-up
-	// function hidePopupConsent() {
-	// document.getElementById("popup-consent").classList.remove("show");
-	// }
 	// Function to show the pin pop-up
 	function showPopupPin() {
 	document.getElementById("popup-pin").classList.add("show");
@@ -293,10 +270,7 @@
 
 	var SurflySession;
 	function startCorowsing()
-	{
-		// Hide consent popup when starting the session
-		// hidePopupConsent();
-		
+	{	
 		(function (s, u, r, f, l, y)
 		{
 			s[f] = s[f] || { init: function () { s[f].q = arguments } };
