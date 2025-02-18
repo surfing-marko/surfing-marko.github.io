@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -173,47 +172,50 @@
 	var SurflySession;
 	function startCorowsing()
 	{
-	(function (s, u, r, f, l, y)
-	{
-		s[f] = s[f] || { init: function () { s[f].q = arguments } };
-		l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
-		l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
-	})
-	(window, document, 'script', 'Surfly');
-	var sessionPin;
-	var settings =
-	{
-		widget_key: "4e3d97b9f9c549b798eb8735a4b7c619",
-		block_until_agent_joins: false,
-		session_autorestore_enabled: false
-		//Disable the default Surfly pin code pop up
-	};
-
-	Surfly.init(settings, function (init)
-	{
-		if (init.success && !Surfly.isInsideSession)
+		// Hide consent popup when starting the session
+		hidePopupConsent();
+		
+		(function (s, u, r, f, l, y)
 		{
-			console.log("init success");
-			SurflySession = Surfly.session().startLeader()
-			.on("session_created", function (session, event)
+			s[f] = s[f] || { init: function () { s[f].q = arguments } };
+			l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
+			l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
+		})
+		(window, document, 'script', 'Surfly');
+		var sessionPin;
+		var settings =
+		{
+			widget_key: "4e3d97b9f9c549b798eb8735a4b7c619",
+			block_until_agent_joins: false,
+			session_autorestore_enabled: false
+			//Disable the default Surfly pin code pop up
+		};
+
+		Surfly.init(settings, function (init)
+		{
+			if (init.success && !Surfly.isInsideSession)
 			{
-				sessionPin = session.pin;
-				console.log("session pin:"+sessionPin);
-				document.querySelector(".popup-pin-code").innerText = sessionPin;
-				console.log(session.pin);
-				showPopupPin();
-			})
-			.on("session_loaded", function (session, event)
-			{
-			})
-			.on("participant_joined", function (session, event)
-			{
-				console.log("participant joined");
-				SurflySession.relocate("https://www.google.com", false);
-				hidePopupPin();
-			})
-		}
-	});
+				console.log("init success");
+				SurflySession = Surfly.session().startLeader()
+				.on("session_created", function (session, event)
+				{
+					sessionPin = session.pin;
+					console.log("session pin:"+sessionPin);
+					document.querySelector(".popup-pin-code").innerText = sessionPin;
+					console.log(session.pin);
+					showPopupPin();
+				})
+				.on("session_loaded", function (session, event)
+				{
+				})
+				.on("participant_joined", function (session, event)
+				{
+					console.log("participant joined");
+					SurflySession.relocate("https://www.rbc.com", false);
+					hidePopupPin();
+				})
+			}
+		});
 	}
 
 	function endSession() {
