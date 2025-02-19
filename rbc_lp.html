@@ -275,6 +275,7 @@
 		{
 			s[f] = s[f] || { init: function () { s[f].q = arguments } };
 			l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
+			// Change the script path to https://uat.surfly.com/surfly.js if you are using the UAT environment
 			l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
 		})
 		(window, document, 'script', 'Surfly');
