@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>RBC Remote Assistance Landing Page</title>
+	<style>
+	body
+	{
+		margin: 0;
+		padding: 0;
+		min-height: 100vh;
+		background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+					url('https://www.reuters.com/resizer/v2/https%3A%2F%2Fcloudfront-us-east-2.images.arcpublishing.com%2Freuters%2FP5F5PSAMRNKF7C63VTT7N4UF4M.jpg?auth=aee5e5732ec19ec39a0292cf8c3daa1f76954f8ce5f726ee3bd239cd431aa7da&width=1080&quality=80');
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-attachment: fixed;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-family: Roboto, Arial, Helvetica, sans-serif;
+	}
+
+	.start-btn
+	{
+		padding: 1rem 2rem;
+		font-size: 1.2rem;
+		background-color: #fedf01;
+		color: #252525;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+		transition: background-color 0.3s ease;
+	}
+
+	.start-btn:hover
+	{
+		background-color: #0056b3;
+	}
+
+	.popup-p
+	{
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		background: rgba(0, 0, 0, 0.6);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		visibility: hidden;
+		opacity: 0;
+		transition: opacity 0.3s ease, visibility 0.3s ease;
+		z-index:999999999999999;
+	}
+
+	.popup-content
+	{
+	background-color: white;
+	padding: 2rem;
+	border-radius: 10px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+	text-align: center;
+	width: 300px;
+	}
+
+	.popup-text
+	{
+	margin-bottom: 2rem;
+	font-size: 1.2rem;
+	}
+
+	.popup-pin-code {
+	margin-bottom: 2rem;
+	font-size: 2rem;
+	}
+
+	.popup-buttons
+	{
+	display: flex;
+	justify-content: space-around;
+	}
+
+	.popup-btn
+	{
+	padding: 0.8rem 1.5rem;
+	font-size: 1rem;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+	}
+
+	.cancel-btn
+	{
+	background-color: #dc3545;
+	color: white;
+	}
+
+	.cancel-btn:hover
+	{
+	background-color: #c82333;
+	}
+
+	.continue-btn
+	{
+	background-color: #28a745;
+	color: white;
+	}
+
+	.continue-btn:hover
+	{
+	background-color: #218838;
+	}
+
+	.show
+	{
+	visibility: visible;
+	opacity: 1;
+	}
+
+	.landing-container {
+		background-color: rgba(255, 255, 255, 0.95);
+		border-radius: 12px;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		max-width: 800px;
+		margin: 2rem auto;
+		padding: 2rem;
+		font-family: Roboto, Arial, Helvetica, sans-serif;
+	}
+
+	.header {
+		text-align: center;
+		margin-block-end: 2rem;
+	}
+
+	.logo {
+		max-width: 200px;
+		height: auto;
+		width: auto;
+		display: inline-block;
+	}
+
+	.main-content {
+		text-align: center;
+		contain: content;
+	}
+
+	h1 {
+		color: #0051A5;
+		font-size: clamp(1.75rem, 5vw, 2.5rem);
+		margin-block-end: 1rem;
+		line-height: 1.2;
+	}
+
+	.subtitle {
+		color: #666;
+		font-size: clamp(1rem, 3vw, 1.2rem);
+		margin-block-end: 2rem;
+	}
+
+	.info-box {
+		background-color: #f5f5f5;
+		border-radius: 8px;
+		padding: 2rem;
+		margin-block-end: 2rem;
+		text-align: left;
+		box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+	}
+
+	.info-box h2 {
+		color: #0051A5;
+		margin-block-end: 1rem;
+		margin-block-start: 0;
+	}
+
+	.info-box ul {
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.info-box li {
+		margin-block-end: 0.5rem;
+		padding-inline-start: 1.5rem;
+		position: relative;
+	}
+
+	.info-box li:before {
+		content: "•";
+		color: #0051A5;
+		position: absolute;
+		left: 0;
+		top: 0;
+	}
+
+	@media (max-width: 480px) {
+		.landing-container {
+			padding: 1rem;
+		}
+		
+		.info-box {
+			padding: 1.5rem;
+		}
+	}
+
+	@media print {
+		.landing-container {
+			padding: 0;
+		}
+		
+		.info-box {
+			border: 1px solid #ccc;
+			box-shadow: none;
+		}
+	}
+	</style>
+</head>
+
+<body>
+	<div class="landing-container">
+		<div class="header">
+			<img src="https://logos-world.net/wp-content/uploads/2021/02/Royal-Bank-of-Canada-Logo-700x394.png" alt="Company Logo" class="logo">
+		</div>
+		
+		<div class="main-content">
+			<h1>Welcome to Remote Assistance</h1>
+			<p class="subtitle">We're here to help you with your banking needs</p>
+			
+			<div class="info-box">
+				<h2>Before we begin:</h2>
+				<ul>
+					<li>This session will allow us to see your screen</li>
+					<li>We can guide you through your banking needs</li>
+					<li>Your security and privacy are our top priority</li>
+				</ul>
+			</div>
+
+			<!-- Start Session Button -->
+			<button class="start-btn" onclick="startCorowsing()">Start Session</button>
+
+			<select id="languageSelect" class="language-select">
+				<option value="en">English</option>
+				<option value="es">Español</option>
+				<option value="sr">Serbian</option>
+			</select>
+		</div>
+	</div>
+	<!-- Hidden Pin Pop-Up -->
+	<div class="popup-p" id="popup-pin">
+	<div class="popup-content">
+	<p class="popup-text">Please share the following 4-digit PIN with your Agent</p>
+	<p class="popup-pin-code" id="popup-pin-code"></p>
+	<div class="popup-buttons">
+		<button class="popup-btn cancel-btn" onclick="endSession()">End Session</button>
+	</div>
+	</div>
+	</div>
+
+	<script>
+	//POP UP JAVASSCRIPT
+	// Function to show the pin pop-up
+	function showPopupPin() {
+	document.getElementById("popup-pin").classList.add("show");
+	}
+
+	// Function to hide the pin pop-up
+	function hidePopupPin() {
+	document.getElementById("popup-pin").classList.remove("show");
+	}
+
+	//SURFLY JAVASCRIPT
+
+	var SurflySession;
+	function startCorowsing()
+	{	
+		(function (s, u, r, f, l, y)
+		{
+			s[f] = s[f] || { init: function () { s[f].q = arguments } };
+			l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
+			// Change the script path to https://uat.surfly.com/surfly.js if you are using the UAT environment
+			l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
+		})
+		(window, document, 'script', 'Surfly');
+		var sessionPin;
+		var selectedLanguage = document.getElementById("languageSelect").value;
+		var settings =
+		{
+			// Change the widget key to your own
+			widget_key: "4e3d97b9f9c549b798eb8735a4b7c619",
+			block_until_agent_joins: false,
+			session_autorestore_enabled: false,
+			tags: ["testing"],
+			language: selectedLanguage
+		};
+
+		Surfly.init(settings, function (init)
+		{
+			if (init.success && !Surfly.isInsideSession)
+			{
+				console.log("Surfly initalized successfully");
+				SurflySession = Surfly.session().startLeader()
+				.on("session_created", function (session, event)
+				{
+					sessionPin = session.pin;
+					console.log("session pin:"+sessionPin);
+					document.querySelector(".popup-pin-code").innerText = sessionPin;
+					showPopupPin();
+				})
+				.on("session_loaded", function (session, event)
+				{
+				})
+				.on("participant_joined", function (session, event)
+				{
+					console.log("participant joined");
+					// Add your starting URL here
+					SurflySession.relocate("https://www.rbc.com", false);
+					hidePopupPin();
+				})
+			}
+		});
+	}
+
+	function endSession() {
+	SurflySession.end();
+	}
+	</script>
+</body>
+
+</html>
