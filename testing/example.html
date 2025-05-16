@@ -1,137 +1,65 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-	<meta charset="UTF-8">
-	<title>Surfly Custom Button Demo</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<style>
-		body {
-			background-color: #f0f0f2;
-			margin: 0;
-			padding: 0;
-			font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-		}
-
-		div {
-			width: 600px;
-			margin: 5em auto;
-			padding: 2em;
-			background-color: #fdfdff;
-			border-radius: 0.5em;
-			box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);
-		}
-
-		@media (max-width: 700px) {
-			div {
-				margin: 0 auto;
-				width: auto;
-			}
-		}
-
-		#surfly-custom-btn {
-			transition: box-shadow 0.2s;
-		}
-
-		#surfly-custom-btn:hover {
-			box-shadow: 0 0 16px 4px rgba(32, 32, 32, 0.2);
-		}
-	</style>
-	<script>
-		(function () {
-			var SURFLY_SRC = 'https://surfly.com/surfly.js';
-
-			function waitForSurflyAndInit(retries) {
-				retries = retries || 40; // Wait up to ~4 seconds
-				if (window.Surfly && typeof window.Surfly.init === 'function') {
-					runSurflyInit();
-				} else if (retries > 0) {
-					setTimeout(function () {
-						waitForSurflyAndInit(retries - 1);
-					}, 100);
-				} else {
-					console.log("Surfly did not load in time.");
-				}
-			}
-
-			function runSurflyInit() {
-				var settings = {
-					widget_key: '4e3d97b9f9c549b798eb8735a4b7c619'
-				};
-				window.Surfly.init(settings, function (initResult) {
-					if (initResult.success) {
-						if (!Surfly.isInsideSession) {
-							// Remove old button if present
-							var oldBtn = document.getElementById('surfly-custom-btn');
-							if (oldBtn) oldBtn.remove();
-
-							var imgBtn = document.createElement('img');
-							imgBtn.src = 'https://static-00.iconduck.com/assets.00/toyota-icon-512x328-6oinn3sm.png';
-							imgBtn.id = 'surfly-custom-btn';
-							imgBtn.style.position = 'fixed';
-							imgBtn.style.bottom = '32px';
-							imgBtn.style.right = '32px';
-							imgBtn.style.width = '64px';
-							imgBtn.style.height = '41px';
-							imgBtn.style.cursor = 'pointer';
-							imgBtn.style.zIndex = '9999';
-							imgBtn.title = 'Start Surfly session';
-
-							imgBtn.onclick = function () {
-								console.log("Toyota button clicked!");
-								if (typeof Surfly.session === 'function') {
-									console.log("Calling Surfly.session()");
-									Surfly.session({}, function (sessionResult) {
-										console.log("Surfly session callback:", sessionResult);
-										if (sessionResult && sessionResult.success === false) {
-											alert("Surfly session failed: " + (sessionResult.error || "Unknown error"));
-										}
-									});
-								} else {
-									console.log("Surfly.session is not a function:", Surfly.session);
-									alert("Surfly.session is not available. The script may not have initialized correctly.");
-								}
-							};
-							document.body.appendChild(imgBtn);
-							console.log("Surfly custom Toyota button added.");
-						}
-					} else {
-						console.log("Surfly was unable to initialize properly.", initResult);
-						alert("Surfly could not initialize (likely due to domain restrictions or invalid key). See console for details.");
-					}
-				});
-			}
-
-			// Inject Surfly script only if needed
-			if (!window.Surfly) {
-				var l = document.createElement('script');
-				l.async = 1;
-				l.src = SURFLY_SRC;
-				var y = document.getElementsByTagName('script')[0];
-				if (y && y.parentNode) {
-					y.parentNode.insertBefore(l, y);
-				} else if (document.head) {
-					document.head.appendChild(l);
-				} else if (document.body) {
-					document.body.appendChild(l);
-				}
-				l.onload = function () {
-					waitForSurflyAndInit();
-				};
-			} else {
-				waitForSurflyAndInit();
-			}
-		})();
-	</script>
+  <meta charset="UTF-8">
+  <title>Mock Surfly Toyota Button Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background-color: #f0f0f2;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    div {
+      width: 600px;
+      margin: 5em auto;
+      padding: 2em;
+      background-color: #fdfdff;
+      border-radius: 0.5em;
+      box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);
+    }
+    @media (max-width: 700px) {
+      div { margin: 0 auto; width: auto; }
+    }
+    #surfly-custom-btn {
+      transition: box-shadow 0.2s;
+    }
+    #surfly-custom-btn:hover {
+      box-shadow: 0 0 16px 4px rgba(32, 32, 32, 0.2);
+    }
+  </style>
 </head>
-
 <body>
-	<div>
-		<h1>Example Domain</h1>
-		<p>This domain is for use in illustrative examples in documents. You may use this
-			domain in literature without prior coordination or asking for permission.</p>
-		<p><a href="https://www.iana.org/domains/example">More information...</a></p>
-	</div>
-</body>
+  <div>
+    <h1>Example Domain</h1>
+    <p>This domain is for use in illustrative examples in documents. You may use this
+      domain in literature without prior coordination or asking for permission.</p>
+    <p><a href="https://www.iana.org/domains/example">More information...</a></p>
+  </div>
 
+  <script>
+    // Remove any old button first (for repeated loads)
+    var oldBtn = document.getElementById('surfly-custom-btn');
+    if (oldBtn) oldBtn.remove();
+
+    // Create the custom floating image button
+    var imgBtn = document.createElement('img');
+    imgBtn.src = 'https://static-00.iconduck.com/assets.00/toyota-icon-512x328-6oinn3sm.png';
+    imgBtn.id = 'surfly-custom-btn';
+    imgBtn.style.position = 'fixed';
+    imgBtn.style.bottom = '32px';
+    imgBtn.style.right = '32px';
+    imgBtn.style.width = '64px';
+    imgBtn.style.height = '41px';
+    imgBtn.style.cursor = 'pointer';
+    imgBtn.style.zIndex = '9999';
+    imgBtn.title = 'Start Surfly session';
+
+    imgBtn.onclick = function () {
+      alert("This would start a Surfly co-browsing session on a registered domain.");
+    };
+    document.body.appendChild(imgBtn);
+  </script>
+</body>
 </html>
