@@ -29,7 +29,11 @@
 						event.preventDefault(); // Prevent default link behavior
 						if (!Surfly.isInsideSession) {
 							// Start a Surfly session directly
-							Surfly.session().startLeader();
+							Surfly.session().startLeader(null,
+								{
+									"Key": "Value"
+								}
+							);
 							session.openTab('https://www.example.com');
 						} else {
 							console.log("Already inside a Surfly session.");
