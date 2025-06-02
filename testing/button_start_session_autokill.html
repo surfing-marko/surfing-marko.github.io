@@ -65,16 +65,8 @@
 				// 		}
 				// 	});
 				// }
-		);
+		)});
 	</script>
 </body>
 
 </html>
-
-if (init.success && !Surfly.isInsideSession) {
-console.log("init success");
-SurflySession = Surfly.session().create()
-.on("session_created", function (session, event){
-SurflySession.startLeader();
-})
-}
