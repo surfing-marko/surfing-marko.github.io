@@ -46,8 +46,8 @@
               console.log('Session window loaded—will end in 5 seconds.');
               // End the session after 5 seconds
               setTimeout(function() {
-                session.end();
-                console.log('Session ended.');
+                SurflySession.end();
+                console.log('Session hopefully ended.');
               }, 5000);
             })
             // Now actually open the session (starts the leader window)
