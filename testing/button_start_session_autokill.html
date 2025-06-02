@@ -1,52 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Surfly Co-browse</title>
 </head>
+
 <body>
 	<!-- Text hotlink for starting Surfly -->
 	<a href="#" id="startSurfly" onclick="startCobrowsing()">Co-browse</a>
 
 	<script>
 		// Load the Surfly script asynchronously
-		(function(s, u, r, f, l, y) {
-			s[f] = s[f] || { init: function() { s[f].q = arguments } };
+		(function (s, u, r, f, l, y) {
+			s[f] = s[f] || { init: function () { s[f].q = arguments } };
 			l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
 			l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
 		})(window, document, 'script', 'Surfly');
 
 		// Wait for the DOM to be fully loaded
-		document.addEventListener('DOMContentLoaded', function() {
+		document.addEventListener('DOMContentLoaded', function () {
 			// Initialize Surfly with your widget key
-			Surfly.init({ widget_key: '4e3d97b9f9c549b798eb8735a4b7c619' }, function(initResult) {
+			Surfly.init({ widget_key: '4e3d97b9f9c549b798eb8735a4b7c619' }, function (initResult) {
 				if (initResult.success) {
 					console.log("Surfly initialized successfully.");
+					// Countdown timer
+					let secondsLeft = 5;
+					const countdownInterval = setInterval(function () {
+						console.log(`Session will end in ${secondsLeft} seconds...`);
+						secondsLeft--;
+
+						if (secondsLeft < 0) {
+							clearInterval(countdownInterval);
+							if (Surfly.isInsideSession) {
+								console.log("Attempting to end session...");
+								Surfly.session().end();
+								console.log("Session ended after 5 seconds");
+							}
+						}
+					}, 1000);
 
 					// Add click event listener to the link
-					document.getElementById('startSurfly').addEventListener('click', function(event) {
+					document.getElementById('startSurfly').addEventListener('click', function (event) {
 						event.preventDefault(); // Prevent default link behavior
 						if (!Surfly.isInsideSession) {
 							// Start a Surfly session directly
 							Surfly.session().startLeader(null);
 							session.openTab('https://www.example.com');
-							
-							// Countdown timer
-							let secondsLeft = 5;
-							const countdownInterval = setInterval(function() {
-								console.log(`Session will end in ${secondsLeft} seconds...`);
-								secondsLeft--;
-								
-								if (secondsLeft < 0) {
-									clearInterval(countdownInterval);
-									if (Surfly.isInsideSession) {
-										console.log("Attempting to end session...");
-										Surfly.session().end();
-										console.log("Session ended after 5 seconds");
-									}
-								}
-							}, 1000);
 						} else {
 							console.log("Already inside a Surfly session.");
 						}
@@ -58,4 +59,5 @@
 		});
 	</script>
 </body>
+
 </html>
