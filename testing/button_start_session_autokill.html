@@ -34,12 +34,12 @@
 					.on("session_started", function (session, event) {
 						console.log("Session has started");
 						(async () => {
-							await new Promise(resolve => setTimeout(resolve, 120000));
+							await new Promise(resolve => setTimeout(resolve, 10000));
 							if (participantJoined === true) {
 								console.log('Participant has joined.');
 							} else {
 								SurflySession.end();
-								console.log("Session ended due no other participants joined within 2 minutes");
+								console.log("Session ended due no other participants joined within 10 seconds");
 							}
 						})();
 					})
@@ -48,9 +48,9 @@
 							clearTimeout(session.inactivityTimeout);
 						}
 						session.inactivityTimeout = setTimeout(function () {
-							console.log("Session ended due to inactivity");
+							console.log("Session ended due to 15 second inactivity");
 							SurflySession.end();
-						}, 600000);
+						}, 15000);
 					})
 					.on('participant_joined', function (session, event) {
 						console.log('Participant ', event.clientIndex, 'joined the session');
