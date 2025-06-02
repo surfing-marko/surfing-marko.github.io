@@ -9,7 +9,7 @@
 
 <body>
 	<!-- Text hotlink for starting Surfly -->
-	<a>End session if nobody joins after X time and close if inactivity after X time</a>
+	<a>End session if nobody joins after 10 seconds and close if inactivity after 10 seconds</a>
 
 	<script>
 		(function (s, u, r, f, l, y) {
@@ -34,22 +34,42 @@
 					.on("session_started", function (session, event) {
 						console.log("Session has started");
 						(async () => {
-							await new Promise(resolve => setTimeout(resolve, 10000));
-							if (participantJoined === true) {
-								console.log('Participant has joined.');
-							} else {
-								SurflySession.end();
-								console.log("Session ended due no other participants joined within 10 seconds");
-							}
+						    for (let i = 10; i > 0; i--) {
+						        console.log(`Waiting for participant: ${i} seconds remaining`);
+						        await new Promise(resolve => setTimeout(resolve, 1000));
+						        if (participantJoined) {
+						            console.log('Participant has joined.');
+						            return;
+						        }
+						    }
+						    // After countdown
+						    if (participantJoined) {
+						        console.log('Participant has joined.');
+						    } else {
+						        SurflySession.end();
+						        console.log("Session ended due no other participants joined within 10 seconds");
+						    }
 						})();
 					})
 					.on("user_activity", function (session, event) {
 						if (session.inactivityTimeout) {
-							clearTimeout(session.inactivityTimeout);
+						    clearTimeout(session.inactivityTimeout);
 						}
+						if (session.inactivityInterval) {
+						    clearInterval(session.inactivityInterval);
+						}
+						let inactivitySeconds = 15;
+						console.log(`Inactivity: ${inactivitySeconds} seconds remaining`);
+						session.inactivityInterval = setInterval(function() {
+						    inactivitySeconds--;
+						    if (inactivitySeconds > 0) {
+						        console.log(`Inactivity: ${inactivitySeconds} seconds remaining`);
+						    }
+						}, 1000);
 						session.inactivityTimeout = setTimeout(function () {
-							console.log("Session ended due to 15 second inactivity");
-							SurflySession.end();
+						    clearInterval(session.inactivityInterval);
+						    console.log("Session ended due to 15 second inactivity");
+						    SurflySession.end();
 						}, 15000);
 					})
 					.on('participant_joined', function (session, event) {
