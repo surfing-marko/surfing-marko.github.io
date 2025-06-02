@@ -29,13 +29,22 @@
             .on("session_created", function (session, event) {
                 SurflySession.startLeader();
                 console.log("Session started successfully");
-                // Set timeout to end session after 5 seconds
-                setTimeout(function() {
-                    if (Surfly.isInsideSession) {
-                        SurflySession.end();
-                        console.log("Session ended after 5 seconds");
+                
+                // Countdown timer
+                let secondsLeft = 5;
+                const countdownInterval = setInterval(function() {
+                    console.log(`Session will end in ${secondsLeft} seconds...`);
+                    secondsLeft--;
+                    
+                    if (secondsLeft < 0) {
+                        clearInterval(countdownInterval);
+                        if (Surfly.isInsideSession) {
+                            console.log("Attempting to end session...");
+                            SurflySession.end();
+                            console.log("Session ended after 5 seconds");
+                        }
                     }
-                }, 5000);
+                }, 1000);
             }) 
         }
     });
