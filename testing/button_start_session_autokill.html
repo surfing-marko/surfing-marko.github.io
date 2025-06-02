@@ -12,45 +12,52 @@
 	<a href="#" id="startSurfly" onclick="startCobrowsing()">Co-browse</a>
 
 	<script>
-		(function (s, u, r, f, l, y) {
-			s[f] = s[f] || { init: function () { s[f].q = arguments } };
-			l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
-			l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
-		})(window, document, 'script', 'Surfly');
+    // 1) Insert Surfly widget script asynchronously
+    (function(s, u, r, f, l, y) {
+      s[f] = s[f] || { init: function() { s[f].q = arguments; } };
+      l = u.createElement(r);
+      y = u.getElementsByTagName(r)[0];
+      l.async = 1;
+      l.src = 'https://surfly.com/surfly.js';
+      y.parentNode.insertBefore(l, y);
+    })(window, document, 'script', 'Surfly');
 
-		var SurflySession;
-		var settings = {
-			"url": "https://www.google.com/",
-			"widget_key": "4e3d97b9f9c549b798eb8735a4b7c619",
-		};
+    // 2) Shared settings for Surfly.init()
+    const settings = {
+      url: 'https://www.google.com/',
+      widget_key: '4e3d97b9f9c549b798eb8735a4b7c619'
+    };
 
-		Surfly.init(settings, function (init) {
-			if (init.success && !Surfly.isInsideSession) {
-				console.log("init success");
-				SurflySession = Surfly.session().create()
-					.on("session_created", function (session, event) {
-						SurflySession.startLeader();
-						console.log("Session started successfully");
+    let SurflySessionInstance = null;
 
-						// Countdown timer
-						let secondsLeft = 5;
-						const countdownInterval = setInterval(function () {
-							console.log(`Session will end in ${secondsLeft} seconds...`);
-							secondsLeft--;
+    function startCobrowsing() {
+      // Initialize Surfly (queues until the widget script loads)
+      Surfly.init(settings, function(init) {
+        if (!init.success) {
+          console.error('Surfly.init failed:', init.errorMsg);
+          return;
+        }
 
-							if (secondsLeft < 0) {
-								clearInterval(countdownInterval)
-								{
-									console.log("Attempting to end session...");
-									SurflySession.end();
-									console.log("Session ended after 5 seconds");
-								};
-							}
-						}, 1000);
-					})
-			}
-		});
-	</script>
+        // Only create a session if we're not already inside one
+        if (!Surfly.isInsideSession) {
+          SurflySessionInstance = Surfly.session().create()
+            // When Surfly reports that the session window has opened:
+            .on('session_started', function(session) {
+              console.log('Session window loaded—will end in 5 seconds.');
+              // End the session after 5 seconds
+              setTimeout(function() {
+                session.end();
+                console.log('Session ended.');
+              }, 5000);
+            })
+            // Now actually open the session (starts the leader window)
+            .startLeader();
+        } else {
+          console.warn('Already inside a Surfly session.');
+        }
+      });
+    }
+  </script>
 </body>
 
 </html>
