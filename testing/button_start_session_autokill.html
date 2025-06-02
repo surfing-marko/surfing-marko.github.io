@@ -12,75 +12,45 @@
 	<a href="#" id="startSurfly" onclick="startCobrowsing()">Co-browse</a>
 
 	<script>
-		// Load the Surfly script asynchronously
 		(function (s, u, r, f, l, y) {
 			s[f] = s[f] || { init: function () { s[f].q = arguments } };
 			l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
 			l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
 		})(window, document, 'script', 'Surfly');
 
-		let SurflySession;
-		// Wait for the DOM to be fully loaded
-		document.addEventListener('DOMContentLoaded', function () {
-			Surfly.init({ widget_key: '4e3d97b9f9c549b798eb8735a4b7c619' }, function (initResult) {
-				if (initResult.success && !Surfly.isInsideSession) {
-					console.log("init success");
-					SurflySession = Surfly.session().create()
-						.on("session_created", function (session, event) {
-							SurflySession.startLeader();
-							// Countdown timer
-							let secondsLeft = 5;
-							const countdownInterval = setInterval(function () {
-								console.log(`Session will end in ${secondsLeft} seconds...`);
-								secondsLeft--;
+		var SurflySession;
+		var participantJoined = false;
+		var settings = {
+			"widget_key": "4e3d97b9f9c549b798eb8735a4b7c619",
+		};
 
-								if (secondsLeft === 0) {
-									clearInterval(countdownInterval);
-									if (Surfly.isInsideSession) {
-										console.log("Attempting to end session...");
-										SurflySession.end();
-										console.log("Session ended after 5 seconds");
-									}
+		Surfly.init(settings, function (init) {
+			if (init.success && !Surfly.isInsideSession) {
+				console.log("init success");
+				SurflySession = Surfly.session().create()
+					.on("session_created", function (session, event) {
+						SurflySession.startLeader();
+					})
+					.on("session_started", function (session, event) {
+						console.log("Session has started");
+						// Countdown timer
+						let secondsLeft = 5;
+						const countdownInterval = setInterval(function () {
+							console.log(`Session will end in ${secondsLeft} seconds...`);
+							secondsLeft--;
+
+							if (secondsLeft === 0) {
+								clearInterval(countdownInterval);
+								if (Surfly.isInsideSession) {
+									console.log("Attempting to end session...");
+									SurflySession.end();
+									console.log("Session ended after 5 seconds");
 								}
-							}, 1000);
-						})
-				}
+							}
+						}, 1000);
+					})
 			}
-				// {
-				// 	// Initialize Surfly with your widget key
-				// 	Surfly.init({ widget_key: '4e3d97b9f9c549b798eb8735a4b7c619' }, function (initResult) {
-				// 		if (initResult.success) {
-				// 			console.log("Surfly initialized successfully.");
-				// 			// Add click event listener to the link
-				// 			document.getElementById('startSurfly').addEventListener('click', function (event) {
-				// 				if (!Surfly.isInsideSession) {
-				// 					// Start a Surfly session directly
-				// 					SurflySession = Surfly.session().startLeader();
-						// 			// Countdown timer
-						// 			let secondsLeft = 5;
-						// 			const countdownInterval = setInterval(function () {
-						// 				console.log(`Session will end in ${secondsLeft} seconds...`);
-						// 				secondsLeft--;
-
-						// 				if (secondsLeft === 0) {
-						// 					clearInterval(countdownInterval);
-						// 					if (Surfly.isInsideSession) {
-						// 						console.log("Attempting to end session...");
-						// 						SurflySession.end();
-						// 						console.log("Session ended after 5 seconds");
-						// 					}
-						// 				}
-						// 			}, 1000);
-						// 		} else {
-						// 			console.log("Already inside a Surfly session.");
-						// 		}
-						// 	});
-						// } else {
-						// 	console.error("Surfly failed to initialize.");
-						// }
-				// 	});
-				// }
-		)});
+		});
 	</script>
 </body>
 
