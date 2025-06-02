@@ -29,18 +29,16 @@
 						event.preventDefault(); // Prevent default link behavior
 						if (!Surfly.isInsideSession) {
 							// Start a Surfly session directly
-							Surfly.session().startLeader(null,
-								{
-									"Key": "Value"
-								}
-							);
-							// Set timeout to end session after 15 seconds
-							setTimeout(function() {
-								if (Surfly.isInsideSession) {
-									Surfly.session().end();
-									console.log("Session ended after 15 seconds");
-								}
-							}, 15000);
+							Surfly.session().startLeader(null, function(session) {
+								console.log("Session started successfully");
+								// Set timeout to end session after 5 seconds
+								setTimeout(function() {
+									if (Surfly.isInsideSession) {
+										session.end();
+										console.log("Session ended after 5 seconds");
+									}
+								}, 5000);
+							});
 						} else {
 							console.log("Already inside a Surfly session.");
 						}
