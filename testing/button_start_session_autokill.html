@@ -17,6 +17,7 @@
 			l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
 		})(window, document, 'script', 'Surfly');
 
+		let SurflySession;
 		// Wait for the DOM to be fully loaded
 		document.addEventListener('DOMContentLoaded', function() {
 			// Initialize Surfly with your widget key
@@ -29,14 +30,14 @@
 						event.preventDefault(); // Prevent default link behavior
 						if (!Surfly.isInsideSession) {
 							// Start a Surfly session directly
-							Surfly.session().startLeader(null);		
+							SurflySession = Surfly.session().startLeader();		
 							// Countdown timer
 							let secondsLeft = 5;
 							const countdownInterval = setInterval(function() {
 								console.log(`Session will end in ${secondsLeft} seconds...`);
 								secondsLeft--;
 								
-								if (secondsLeft < 0) {
+								if (secondsLeft = 0) {
 									clearInterval(countdownInterval);
 									if (Surfly.isInsideSession) {
 										console.log("Attempting to end session...");
