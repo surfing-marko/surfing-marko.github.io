@@ -37,7 +37,7 @@
 								console.log(`Session will end in ${secondsLeft} seconds...`);
 								secondsLeft--;
 								
-								if (secondsLeft = 0) {
+								if (secondsLeft === 0) {
 									clearInterval(countdownInterval);
 									if (Surfly.isInsideSession) {
 										console.log("Attempting to end session...");
