@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Local Storage Test</title>
+</head>
+<body>
+  <h1>Local Storage Demo</h1>
+  <button onclick="writeToLocalStorage()">Write to local storage</button>
+
+  <script>
+    function writeToLocalStorage() {
+      const existingData = localStorage.getItem("testData") || "";
+      const newData = existingData + "local storage TEST\n";
+      localStorage.setItem("testData", newData);
+      console.log("Written to localStorage:", newData);
+    }
+  </script>
+</body>
+</html>
