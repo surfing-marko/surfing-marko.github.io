@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awesome SaaS - Grow Your Business</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #f4f4f4;
+            text-align: center;
+        }
+        .header {
+            background: #1e88e5;
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+        }
+        .hero {
+            padding: 50px;
+            background: #1c1c1c;
+        }
+        .container {
+            background: #222;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            width: 400px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background: #333;
+            color: white;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #1e88e5;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #1565c0;
+        }
+    </style>
+
+    <script>
+        (function(s,u,r,f,l,y){s[f]=s[f]||{init:function(){s[f].q=arguments}};
+            l=u.createElement(r);y=u.getElementsByTagName(r)[0];l.async=1;
+            l.src='https://surfly.com/surfly.js';y.parentNode.insertBefore(l,y);})
+        (window,document,'script','Surfly');
+
+        var settings = {
+            // Surfly session options can be set here, or at the Company/Plan levels.
+            widget_key: '4046c2f48fda4e1299e62dbb944d861e',
+        };
+
+        Surfly.init(settings, function(initResult) {
+            if (initResult.success) {
+                // API calls can now be made!
+                if (!Surfly.isInsideSession) {
+                    Surfly.button();
+                }
+            }
+            else{
+                console.log("Surfly was unable to initialize properly.")
+            }
+        });
+    </script>
+</head>
+<body>
+<div class="header">Awesome SaaS - The Future of Business Automation</div>
+<div class="hero">
+    <h1>Supercharge Your Business</h1>
+    <p>Our cutting-edge SaaS solution helps you automate, optimize, and grow effortlessly. Join the future today.</p>
+</div>
+<div class="container">
+    <h2>Contact Us</h2>
+    <p>Have questions? Let's talk!</p>
+    <form id="contactForm">
+        <input type="text" id="name" placeholder="Your Name" required>
+        <input type="email" id="email" placeholder="Your Email" required>
+        <textarea id="message" placeholder="Your Message" rows="4" required></textarea>
+        <input class="redacted" type="secret" id="secret" placeholder="Your Secret" required>
+
+        <button type="submit">Get in Touch</button>
+    </form>
+    <p id="responseMessage" style="color: lightgreen; display: none;">Thank you! We'll be in touch soon.</p>
+</div>
+
+<script>
+    document.getElementById('contactForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        document.getElementById('responseMessage').style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('responseMessage').style.display = 'none';
+            document.getElementById('contactForm').reset();
+        }, 2000);
+    });
+</script>
+</body>
+</html>
