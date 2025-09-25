@@ -31,17 +31,20 @@
 					.on("session_started", function (session, event) {
 						console.log("Session has started");
 						(async () => {
-							for (let i = 10; i > 0; i--) {
-								console.log(`Waiting for participant: ${i} seconds remaining`);
-								await new Promise(resolve => setTimeout(resolve, 10000));
-								if (participantJoined === true) {
-									console.log('Participant has joined.');
-									return;
-							} else {
-								SurflySession.end();
-								console.log("Session ended due no other participants joined within 10 seconds");
+							if (Surfly.isInsideSession) {
+								for (let i = 10; i > 0; i--) {
+									console.log(`Waiting for participant: ${i} seconds remaining`);
+									await new Promise(resolve => setTimeout(resolve, 10000));
+									if (participantJoined === true) {
+										console.log('Participant has joined.');
+										return;
+									} else {
+										SurflySession.end();
+										console.log("Session ended due no other participants joined within 10 seconds");
+									}
+								}
 							}
-						}})();
+						})();
 					})
 					.on("user_activity", function (session, event) {
 						if (session.inactivityTimeout) {
