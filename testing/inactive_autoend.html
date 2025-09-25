@@ -18,7 +18,7 @@
 		var SurflySession;
 		var settings = {
 			"widget_key": "4e3d97b9f9c549b798eb8735a4b7c619",
-			"block_until_agent_joins": "false"
+			"block_until_agent_joins": "false",
 		};
 		const INACTIVITY_DURATION = 15; // seconds
 
@@ -38,7 +38,6 @@
 				}
 			}, 1000);
 			session.inactivityTimeout = setTimeout(function () {
-				clearInterval(session.inactivityInterval);
 				console.log(`Session ended due to ${INACTIVITY_DURATION} seconds of inactivity`);
 				SurflySession.end();
 			}, INACTIVITY_DURATION * 1000);
