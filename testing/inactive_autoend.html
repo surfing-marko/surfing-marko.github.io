@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Surfly Co-browse</title>
+</head>
+
+<body>
+	<a>End session if nobody joins after 10 seconds and close if inactivity after 15 seconds</a>
+
+	<script>
+		(function (s, u, r, f, l, y) {
+			s[f] = s[f] || { init: function () { s[f].q = arguments } };
+			l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
+			l.src = 'https://surfly.com/surfly.js'; y.parentNode.insertBefore(l, y);
+		})(window, document, 'script', 'Surfly');
+		var SurflySession;
+		var settings = {
+			"widget_key": "4e3d97b9f9c549b798eb8735a4b7c619",
+			"block_until_agent_joins": "false"
+		};
+		const INACTIVITY_DURATION = 15; // seconds
+
+		function resetInactivityTimer(session) {
+			if (session.inactivityTimeout) {
+				clearTimeout(session.inactivityTimeout);
+			}
+			if (session.inactivityInterval) {
+				clearInterval(session.inactivityInterval);
+			}
+			let inactivitySeconds = INACTIVITY_DURATION;
+			console.log(`Inactivity: ${inactivitySeconds} seconds remaining`);
+			session.inactivityInterval = setInterval(function () {
+				inactivitySeconds--;
+				if (inactivitySeconds > 0) {
+					console.log(`Inactivity: ${inactivitySeconds} seconds remaining`);
+				}
+			}, 1000);
+			session.inactivityTimeout = setTimeout(function () {
+				clearInterval(session.inactivityInterval);
+				console.log(`Session ended due to ${INACTIVITY_DURATION} seconds of inactivity`);
+				SurflySession.end();
+			}, INACTIVITY_DURATION * 1000);
+		}
+
+		Surfly.init(settings, function (init) {
+			if (init.success && !Surfly.isInsideSession) {
+				console.log("init success");
+				SurflySession = Surfly.session().create()
+					.on("session_created", function (session, event) {
+						SurflySession.startLeader();
+					})
+					.on("session_started", function (session, event) {
+						console.log("Session has started");
+						resetInactivityTimer(session);
+					})
+					.on("user_activity", function (session, event) {
+						resetInactivityTimer(session);
+					})
+					.on("session_ended", function (session, event) {
+						if (session.inactivityTimeout) clearTimeout(session.inactivityTimeout);
+						if (session.inactivityInterval) clearInterval(session.inactivityInterval);
+					})
+			}
+		});
+	</script>
+</body>
+</html>
