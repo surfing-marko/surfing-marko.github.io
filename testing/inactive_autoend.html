@@ -7,7 +7,7 @@
 </head>
 
 <body>
-	<a>End session if nobody joins after 10 seconds and close if inactivity after 15 seconds</a>
+	<a>End session due to inactivity</a>
 
 	<script>
 		(function (s, u, r, f, l, y) {
@@ -23,8 +23,6 @@
 		const INACTIVITY_DURATION = 15; // seconds
 
 		function resetInactivityTimer(session) {
-			// Only run the inactivity timer while actually inside a session
-			if (!Surfly.isInsideSession) return;
 			if (session.inactivityTimeout) {
 				clearTimeout(session.inactivityTimeout);
 			}
@@ -34,12 +32,6 @@
 			let inactivitySeconds = INACTIVITY_DURATION;
 			console.log(`Inactivity: ${inactivitySeconds} seconds remaining`);
 			session.inactivityInterval = setInterval(function () {
-				if (!Surfly.isInsideSession) {
-					clearInterval(session.inactivityInterval);
-					if (session.inactivityTimeout) clearTimeout(session.inactivityTimeout);
-					console.log("Inactivity timer paused: not inside session");
-					return;
-				}
 				inactivitySeconds--;
 				if (inactivitySeconds > 0) {
 					console.log(`Inactivity: ${inactivitySeconds} seconds remaining`);
@@ -63,7 +55,7 @@
 						resetInactivityTimer(session);
 					})
 					.on("user_activity", function (session, event) {
-						if (Surfly.isInsideSession) resetInactivityTimer(session);
+						resetInactivityTimer(session);
 					})
 					.on("session_ended", function (session, event) {
 						if (session.inactivityTimeout) clearTimeout(session.inactivityTimeout);
