@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,8 +9,8 @@
 
 <body>
 	<a>End session if nobody joins after 10 seconds and close if inactivity after 15 seconds</a>
-
 	<script>
+		let canStartTimeout = false;
 		(function (s, u, r, f, l, y) {
 			s[f] = s[f] || { init: function () { s[f].q = arguments } };
 			l = u.createElement(r); y = u.getElementsByTagName(r)[0]; l.async = 1;
@@ -29,6 +30,7 @@
 						SurflySession.startLeader();
 					})
 					.on("session_started", function (session, event) {
+						const canStartTimeout = true;
 						console.log("Session has started");
 						(async () => {
 							if (Surfly.isInsideSession = true) {
@@ -47,6 +49,7 @@
 						})();
 					})
 					.on("user_activity", function (session, event) {
+						if (!canStartTimeout) return;
 						if (session.inactivityTimeout) {
 							clearTimeout(session.inactivityTimeout);
 						}
@@ -56,6 +59,7 @@
 						let inactivitySeconds = 15;
 						console.log(`Inactivity: ${inactivitySeconds} seconds remaining`);
 						session.inactivityInterval = setInterval(function () {
+							if (canStartTimeout === false) return;
 							inactivitySeconds--;
 							if (inactivitySeconds > 0) {
 								console.log(`Inactivity: ${inactivitySeconds} seconds remaining`);
@@ -65,6 +69,7 @@
 							clearInterval(session.inactivityInterval);
 							console.log("Session ended due to 15 second inactivity");
 							SurflySession.end();
+
 						}, 15000);
 					})
 					.on('participant_joined', function (session, event) {
@@ -75,4 +80,5 @@
 		});
 	</script>
 </body>
+
 </html>
