@@ -9,6 +9,7 @@
 
 <body>
 	<a>End session if nobody joins after 10 seconds and close if inactivity after 15 seconds</a>
+
 	<script>
 		let canStartTimeout = false;
 		(function (s, u, r, f, l, y) {
@@ -21,7 +22,6 @@
 		var settings = {
 			widget_key: "4e3d97b9f9c549b798eb8735a4b7c619",
 			block_until_agent_joins: false,
-			soft_session_end: true,
 		};
 		Surfly.init(settings, function (init) {
 			if (init.success && !Surfly.isInsideSession) {
@@ -69,6 +69,7 @@
 						session.inactivityTimeout = setTimeout(function () {
 							clearInterval(session.inactivityInterval);
 							console.log("Session ended due to 15 second inactivity");
+
 							SurflySession.end();
 
 						}, 15000);
