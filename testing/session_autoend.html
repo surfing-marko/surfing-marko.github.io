@@ -31,7 +31,7 @@
 					.on("session_started", function (session, event) {
 						console.log("Session has started");
 						(async () => {
-							if (Surfly.isInsideSession) {
+							if (Surfly.isInsideSession = true) {
 								for (let i = 10; i > 0; i--) {
 									console.log(`Waiting for participant: ${i} seconds remaining`);
 									await new Promise(resolve => setTimeout(resolve, 10000));
