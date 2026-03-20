@@ -170,6 +170,7 @@
 	//SURFLY JAVASCRIPT
 
 	var SurflySession;
+	var noParticipantJoinTimeout;
 	function startCorowsing()
 	{
 		// Hide consent popup when starting the session
@@ -204,6 +205,14 @@
 					document.querySelector(".popup-pin-code").innerText = sessionPin;
 					console.log(session.pin);
 					showPopupPin();
+
+					noParticipantJoinTimeout = setTimeout(function () {
+						if (SurflySession) {
+							console.log("No participant joined within 10 seconds. Ending session.");
+							hidePopupPin();
+							SurflySession.end();
+						}
+					}, 10000);
 				})
 				.on("session_loaded", function (session, event)
 				{
@@ -211,7 +220,8 @@
 				.on("participant_joined", function (session, event)
 				{
 					console.log("participant joined");
-					SurflySession.relocate("https://www.rbc.com", false);
+					clearTimeout(noParticipantJoinTimeout);
+					SurflySession.relocate("https://durable.com/", false);
 					hidePopupPin();
 				})
 			}
@@ -219,7 +229,10 @@
 	}
 
 	function endSession() {
-	SurflySession.end();
+		clearTimeout(noParticipantJoinTimeout);
+		if (SurflySession) {
+			SurflySession.end();
+		}
 	}
 	</script>
 </body>
