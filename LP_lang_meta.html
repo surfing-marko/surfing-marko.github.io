@@ -277,8 +277,12 @@
 			</div>
 
 			<div class="input-group">
-				<label for="sessionMetaInput" class="input-label">Session tag or metadata</label>
-				<input id="sessionMetaInput" class="meta-input" type="text" placeholder="Enter a tag, reference, or note for this session">
+				<label for="sessionTagInput" class="input-label">Session tag</label>
+				<input id="sessionTagInput" class="meta-input" type="text" placeholder="Enter a tag for this session">
+			</div>
+			<div class="input-group">
+				<label for="sessionMetaInput" class="input-label">Session metadata</label>
+				<input id="sessionMetaInput" class="meta-input" type="text" placeholder="Enter a reference or note for this session">
 			</div>
 			<!-- Language Selection Dropdown -->
 			<select id="languageSelect" class="language-select">
@@ -350,9 +354,14 @@
 		(window, document, 'script', 'Surfly');
 		var sessionPin;
 		var selectedLanguage = document.getElementById("languageSelect").value;
+		var sessionTagInput = document.getElementById("sessionTagInput").value.trim();
 		var sessionMetaInput = document.getElementById("sessionMetaInput").value.trim();
-		var sessionTags = sessionMetaInput ? [sessionMetaInput] : [];
-		var sessionMeta = sessionMetaInput ? { user_input: sessionMetaInput } : {};
+		var sessionTags = sessionTagInput ? [sessionTagInput] : [];
+		var sessionMeta = {};
+		if (sessionMetaInput) {
+			sessionMeta.user_input = sessionMetaInput;
+		}
+		sessionMeta.customer_language = "customer language: " + selectedLanguage;
 		var settings =
 		{
 			// Change the widget key to your own
