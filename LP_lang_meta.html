@@ -4,14 +4,19 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Remote Assistance Landing Page</title>
+	<title>RBC Remote Assistance Landing Page</title>
 	<style>
 	body
 	{
 		margin: 0;
 		padding: 0;
 		min-height: 100vh;
-		background: linear-gradient(135deg, rgba(0, 81, 165, 0.08), rgba(0, 0, 0, 0.04));
+		background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+					url('https://www.reuters.com/resizer/v2/https%3A%2F%2Fcloudfront-us-east-2.images.arcpublishing.com%2Freuters%2FP5F5PSAMRNKF7C63VTT7N4UF4M.jpg?auth=aee5e5732ec19ec39a0292cf8c3daa1f76954f8ce5f726ee3bd239cd431aa7da&width=1080&quality=80');
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-attachment: fixed;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -32,7 +37,7 @@
 
 	.start-btn:hover
 	{
-		background-color: #e6c900;
+		background-color: #0056b3;
 	}
 
 	.popup-p
@@ -227,63 +232,29 @@
 		border-color: #0051A5;
 	}
 
-	.input-group {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-		margin-bottom: 1rem;
-		text-align: left;
-	}
-
-	.input-label {
-		color: #333;
-		font-size: 1rem;
-		font-weight: 600;
-	}
-
-	.meta-input {
-		padding: 0.75rem;
-		font-size: 1rem;
-		border: 1px solid #ccc;
-		border-radius: 5px;
-		background-color: white;
-	}
-
-	.meta-input:focus {
-		outline: none;
-		border-color: #0051A5;
-		box-shadow: 0 0 0 3px rgba(0, 81, 165, 0.15);
-	}
 	</style>
 </head>
 
 <body>
 	<div class="landing-container">
 		<div class="header">
-			<div class="logo" style="font-size: 2rem; font-weight: 700; color: #0051A5;">Your Company</div>
+			<img src="https://logos-world.net/wp-content/uploads/2021/02/Royal-Bank-of-Canada-Logo-700x394.png" alt="Company Logo" class="logo">
 		</div>
 		
 		<div class="main-content">
-			<h1>Welcome to Remote Assistance</h1>
-			<p class="subtitle">We're here to help you with your support needs</p>
+			<h1>Welcome to RBC Remote Assistance</h1>
+			<p class="subtitle">We're here to help you with your banking needs</p>
 			
 			<div class="info-box">
 				<h2>Before we begin:</h2>
 				<ul>
 					<li>This session will allow us to see your screen</li>
-					<li>We can guide you through the process step by step</li>
-					<li>Your security and privacy remain our top priority</li>
+					<li>We can guide you through your banking needs</li>
+					<li>Your security and privacy are our top priority</li>
 				</ul>
 			</div>
 
-			<div class="input-group">
-				<label for="sessionTagInput" class="input-label">Agent Preference</label>
-				<input id="sessionTagInput" class="meta-input" type="text" placeholder="Enter a tag for this session">
-			</div>
-			<div class="input-group">
-				<label for="sessionMetaInput" class="input-label">Your Question</label>
-				<input id="sessionMetaInput" class="meta-input" type="text" placeholder="Enter a reference or note for this session">
-			</div>
+			
 			<!-- Language Selection Dropdown -->
 			<select id="languageSelect" class="language-select">
 				<option value="cs">Čeština</option>
@@ -354,22 +325,13 @@
 		(window, document, 'script', 'Surfly');
 		var sessionPin;
 		var selectedLanguage = document.getElementById("languageSelect").value;
-		var sessionTagInput = document.getElementById("sessionTagInput").value.trim();
-		var sessionMetaInput = document.getElementById("sessionMetaInput").value.trim();
-		var sessionTags = sessionTagInput ? [sessionTagInput] : [];
-		var leaderMeta = {
-			Language: selectedLanguage
-		};
-		if (sessionMetaInput) {
-			leaderMeta.user_input = sessionMetaInput;
-		}
 		var settings =
 		{
 			// Change the widget key to your own
 			widget_key: "4e3d97b9f9c549b798eb8735a4b7c619",
 			block_until_agent_joins: false,
 			session_autorestore_enabled: false,
-			tags: sessionTags,
+			tags: ["testing"],
 			language: selectedLanguage
 		};
 
@@ -378,14 +340,13 @@
 			if (init.success && !Surfly.isInsideSession)
 			{
 				console.log("Surfly initalized successfully");
-				SurflySession = Surfly.session().create()
+				SurflySession = Surfly.session().startLeader()
 				.on("session_created", function (session, event)
 				{
 					sessionPin = session.pin;
 					console.log("session pin:"+sessionPin);
 					document.querySelector(".popup-pin-code").innerText = sessionPin;
 					showPopupPin();
-					SurflySession.startLeader(null, leaderMeta);
 				})
 				.on("session_loaded", function (session, event)
 				{
@@ -394,7 +355,7 @@
 				{
 					console.log("participant joined");
 					// Add your starting URL here
-					SurflySession.relocate("https://example.com", false);
+					SurflySession.relocate("https://www.rbc.com", false);
 					hidePopupPin();
 				})
 			}
