@@ -356,7 +356,7 @@
 			if (init.success && !Surfly.isInsideSession)
 			{
 				console.log("Surfly initalized successfully");
-				SurflySession = Surfly.session().startLeader(null, selectedLanguage)
+				SurflySession = Surfly.session().startLeader(null, {language: selectedLanguage})
 				.on("session_created", function (session, event)
 				{
 					sessionPin = session.pin;
