@@ -357,11 +357,12 @@
 		var sessionTagInput = document.getElementById("sessionTagInput").value.trim();
 		var sessionMetaInput = document.getElementById("sessionMetaInput").value.trim();
 		var sessionTags = sessionTagInput ? [sessionTagInput] : [];
-		var sessionMeta = {};
+		var leaderMeta = {
+			Language: selectedLanguage
+		};
 		if (sessionMetaInput) {
-			sessionMeta.user_input = sessionMetaInput;
+			leaderMeta.user_input = sessionMetaInput;
 		}
-		sessionMeta.customer_language = "customer language: " + selectedLanguage;
 		var settings =
 		{
 			// Change the widget key to your own
@@ -369,7 +370,6 @@
 			block_until_agent_joins: false,
 			session_autorestore_enabled: false,
 			tags: sessionTags,
-			meta: sessionMeta,
 			language: selectedLanguage
 		};
 
@@ -378,13 +378,14 @@
 			if (init.success && !Surfly.isInsideSession)
 			{
 				console.log("Surfly initalized successfully");
-				SurflySession = Surfly.session().startLeader()
+				SurflySession = Surfly.session().create()
 				.on("session_created", function (session, event)
 				{
 					sessionPin = session.pin;
 					console.log("session pin:"+sessionPin);
 					document.querySelector(".popup-pin-code").innerText = sessionPin;
 					showPopupPin();
+					SurflySession.startLeader(null, leaderMeta);
 				})
 				.on("session_loaded", function (session, event)
 				{
