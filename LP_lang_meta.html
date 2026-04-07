@@ -324,9 +324,7 @@
 		})
 		(window, document, 'script', 'Surfly');
 		var sessionPin;
-		var languageSelect = document.getElementById("languageSelect");
-		var selectedLanguage = languageSelect.value;
-		var selectedLanguageLabel = languageSelect.options[languageSelect.selectedIndex].text;
+		var selectedLanguage = document.getElementById("languageSelect").value;
 		var settings =
 		{
 			widget_key: "4e3d97b9f9c549b798eb8735a4b7c619",
@@ -341,7 +339,7 @@
 			if (init.success && !Surfly.isInsideSession)
 			{
 				console.log("Surfly initalized successfully");
-				SurflySession = Surfly.session().startLeader(null, "language: " + selectedLanguageLabel)
+				SurflySession = Surfly.session().startLeader(null, {"language": selectedLanguage})
 				.on("session_created", function (session, event)
 				{
 					sessionPin = session.pin;
