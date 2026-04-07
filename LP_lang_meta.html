@@ -324,7 +324,9 @@
 		})
 		(window, document, 'script', 'Surfly');
 		var sessionPin;
-		var selectedLanguage = document.getElementById("languageSelect").value;
+		var languageSelect = document.getElementById("languageSelect");
+		var selectedLanguage = languageSelect.value;
+		var selectedLanguageLabel = languageSelect.options[languageSelect.selectedIndex].text;
 		var settings =
 		{
 			widget_key: "4e3d97b9f9c549b798eb8735a4b7c619",
