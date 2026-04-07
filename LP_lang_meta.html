@@ -327,7 +327,6 @@
 		var selectedLanguage = document.getElementById("languageSelect").value;
 		var settings =
 		{
-			// Change the widget key to your own
 			widget_key: "4e3d97b9f9c549b798eb8735a4b7c619",
 			block_until_agent_joins: false,
 			session_autorestore_enabled: false,
@@ -340,7 +339,10 @@
 			if (init.success && !Surfly.isInsideSession)
 			{
 				console.log("Surfly initalized successfully");
-				SurflySession = Surfly.session().startLeader()
+				SurflySession = Surfly.session().startLeader(null,
+						{
+						  "language": selectedLanguage
+						});
 				.on("session_created", function (session, event)
 				{
 					sessionPin = session.pin;
