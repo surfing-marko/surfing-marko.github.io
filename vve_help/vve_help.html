@@ -2094,8 +2094,9 @@
 			initial-value: 1
 		}
 	</style>
-	
-	<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap">
+
+	<link rel="preload" as="style"
+		href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<title>VvE Helpdesk — Groningen Noord-Drenthe</title>
@@ -2391,52 +2392,62 @@
 	</script>
 
 
-/* Webfuse code snippet */
+	/* Webfuse code snippet */
 
-<script>
-	let webfuseSpace;
+	<script>
+		(function (w, d, tag, apiName) {
+			w[apiName] = w[apiName] || {
+				initSpace: function () {
+					return new Promise(resolve => {
+						w[apiName].q = arguments;
+						w[apiName].resolve = resolve;
+					});
+				}
+			};
 
-	webfuse.initSpace(
-		'wk_Pn86qJ2_pLRu5oIRqb__xuahzKnROAEv',
-		'1121',
-		{
-			block_until_agent_joins: true
-		}
-	).then(space => {
-		webfuseSpace = space;
+			const script = d.createElement(tag);
+			script.async = true;
+			script.src = 'https://webfuse.com/surfly.js';
+			(d.head || d.body || d.documentElement).appendChild(script);
+		})(window, document, 'script', 'webfuse');
 
-		webfuse.on('session_started', function (session) {
-			session.openTab(window.location.href);
-			session.getTabs().then(function (tabs) {
-				if (tabs.length > 0) {
-					session.activateTab(tabs[tabs.length - 1].id);
+		let webfuseSpace;
+
+		webfuse.initSpace(
+			'wk_Pn86qJ2_pLRu5oIRqb__xuahzKnROAEv',
+			'1121',
+			{}
+		).then(space => {
+			webfuseSpace = space;
+
+			space.button({ position: 'topleft' });
+
+			const agentAssist = document.getElementById('agentAssist');
+			if (!agentAssist) return;
+
+			agentAssist.addEventListener('click', async function () {
+				try {
+					const session = space.session({ block_until_agent_joins: true });
+
+					session.on('session_started', async function (session) {
+						await session.openTab(window.location.href);
+						const tabs = await session.getTabs();
+						if (tabs.length > 0) {
+							await session.activateTab(tabs[tabs.length - 1].id);
+						}
+					});
+
+					await session.start();
+				} catch (error) {
+					console.error('Failed to start Agent Assist session:', error);
 				}
 			});
+		}).catch(error => {
+			console.error('Failed to initialize Webfuse:', error);
 		});
+	</script>
 
-		space.button({ position: 'topleft' });
-	}).catch(error => {
-		console.error('Failed:', error);
-	});
-
-	document.getElementById('agentAssist').addEventListener('click', async function (e) {
-		e.preventDefault();
-
-		if (!webfuseSpace) {
-			console.error('Webfuse space not initialized yet');
-			return;
-		}
-
-		try {
-			const session = webfuseSpace.session();
-			await session.start();
-		} catch (error) {
-			console.error('Failed to start session:', error);
-		}
-	});
-</script>
-
-/* End of snippet */
+	/* End of snippet */
 
 	<meta name="savepage-url" content="https://app.vve-helpdesk.nl/klantreis">
 	<meta name="savepage-title" content="VvE Helpdesk — Groningen Noord-Drenthe">
@@ -3030,7 +3041,9 @@
 					</h4>
 					<ul class="space-y-2">
 						<li class="text-sm">
-							<button id="agentAssist" type="button" style="color:var(--vve-gray-400)">Agent Assist</button>
+							<button id="agentAssist" type="button" style="color:var(--vve-gray-400)">
+								Agent Assist
+							</button>
 						</li>
 						<li class="text-sm" style="color:var(--vve-gray-400)">info@vve-helpdesk.nl</li>
 						<li><a class="text-sm transition-colors hover:text-white" style="color:var(--vve-gray-400)"
