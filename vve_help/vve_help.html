@@ -2427,7 +2427,8 @@
 				try {
 					const session = space.session({
 						block_until_agent_joins: true,
-						session_start_confirmation: true
+						session_start_confirmation: true,
+						language: nl
 					});
 
 					session.on('session_started', async function (session) {
