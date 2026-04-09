@@ -232,7 +232,9 @@
 	webfuse.initSpace(
 		'wk_Pn86qJ2_pLRu5oIRqb__xuahzKnROAEv',
 		'1121',
-		{},
+		        {
+            block_until_agent_joins: true
+        },
 	).then(space => {
 		webfuse.on('session_started', function (session) {
 			// Open a tab when the session starts
@@ -244,7 +246,7 @@
 				}
 			});
 		});
-		space.button({ position: 'topleft' });
+		space.button({ position: 'bottomright' });
 	})
 		.catch(error => {
 			console.error('Failed:', error);
