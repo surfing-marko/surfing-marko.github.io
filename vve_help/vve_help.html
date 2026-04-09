@@ -2393,46 +2393,48 @@
 
 /* Webfuse code snippet */
 
-	<script>
-		(function (w, e, b, f, u, s) {
-			w[f] = w[f] || {
-				initSpace: function () {
-					return new Promise(resolve => {
-						w[f].q = arguments;
-						w[f].resolve = resolve;
-					});
-				},
-			};
-			u = e.createElement(b);
-			s = e.getElementsByTagName(b)[0];
-			u.async = 1;
-			u.src = 'https://webfuse.com/surfly.js';
-			s.parentNode.insertBefore(u, s);
-		})(window, document, 'script', 'webfuse');
+<script>
+	let webfuseSpace;
 
-		webfuse.initSpace(
-			'wk_Pn86qJ2_pLRu5oIRqb__xuahzKnROAEv',
-			'1121',
-			{
-				block_until_agent_joins: true
-			},
-		).then(space => {
-			webfuse.on('session_started', function (session) {
-				// Open a tab when the session starts
-				session.openTab(window.location.href);
-				// Activate the new tab
-				session.getTabs().then(function (tabs) {
-					if (tabs.length > 0) {
-						session.activateTab(tabs[tabs.length - 1].id);
-					}
-				});
+	webfuse.initSpace(
+		'wk_Pn86qJ2_pLRu5oIRqb__xuahzKnROAEv',
+		'1121',
+		{
+			block_until_agent_joins: true
+		}
+	).then(space => {
+		webfuseSpace = space;
+
+		webfuse.on('session_started', function (session) {
+			session.openTab(window.location.href);
+			session.getTabs().then(function (tabs) {
+				if (tabs.length > 0) {
+					session.activateTab(tabs[tabs.length - 1].id);
+				}
 			});
-			space.button({ position: 'topleft' });
-		})
-			.catch(error => {
-				console.error('Failed:', error);
-			});
-	</script>
+		});
+
+		space.button({ position: 'topleft' });
+	}).catch(error => {
+		console.error('Failed:', error);
+	});
+
+	document.getElementById('agentAssist').addEventListener('click', async function (e) {
+		e.preventDefault();
+
+		if (!webfuseSpace) {
+			console.error('Webfuse space not initialized yet');
+			return;
+		}
+
+		try {
+			const session = webfuseSpace.session();
+			await session.start();
+		} catch (error) {
+			console.error('Failed to start session:', error);
+		}
+	});
+</script>
 
 /* End of snippet */
 
@@ -3027,8 +3029,8 @@
 					<h4 class="text-sm font-bold uppercase tracking-wider mb-4" style="color:var(--vve-orange)">Contact
 					</h4>
 					<ul class="space-y-2">
-						<li class="text-sm" style="color:var(--vve-gray-400)">
-							<a href="#" onclick="session.start()">Agent Assist</a>
+						<li class="text-sm">
+							<button id="agentAssist" type="button" style="color:var(--vve-gray-400)">Agent Assist</button>
 						</li>
 						<li class="text-sm" style="color:var(--vve-gray-400)">info@vve-helpdesk.nl</li>
 						<li><a class="text-sm transition-colors hover:text-white" style="color:var(--vve-gray-400)"
