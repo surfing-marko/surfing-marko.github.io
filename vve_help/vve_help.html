@@ -2425,7 +2425,10 @@
 
 			agentAssist.addEventListener('click', async function () {
 				try {
-					const session = space.session({ block_until_agent_joins: true });
+					const session = space.session({
+						block_until_agent_joins: true,
+						session_start_confirmation: true
+					});
 
 					session.on('session_started', async function (session) {
 						await session.openTab(window.location.href);
