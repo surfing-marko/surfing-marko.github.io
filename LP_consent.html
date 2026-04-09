@@ -127,7 +127,7 @@
 	<!-- Hidden Consent Pop-Up -->
 	<div class="popup-c" id="popup-consent">
 	<div class="popup-content">
-	<p class="popup-text">Are you sure you want to start the session?</p>
+	<p class="popup-text">Are you already in a call with our agent? Please call 555-1234 if not!!!</p>
 	<div class="popup-buttons">
 		<button class="popup-btn cancel-btn" onclick="hidePopupConsent()">Cancel</button>
 		<button class="popup-btn continue-btn" onclick="startCorowsing()">Continue</button>
@@ -211,7 +211,7 @@
 				.on("participant_joined", function (session, event)
 				{
 					console.log("participant joined");
-					SurflySession.relocate("https://www.rbc.com", false);
+					SurflySession.relocate("https://www.example.org", false);
 					hidePopupPin();
 				})
 			}
