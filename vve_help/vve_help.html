@@ -2426,7 +2426,7 @@
 			agentAssist.addEventListener('click', async function () {
 				try {
 					const session = space.session({
-						block_until_agent_joins: true,
+						block_until_agent_joins: false,
 						session_start_confirmation: true
 					});
 
