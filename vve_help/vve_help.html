@@ -2413,6 +2413,44 @@
 
 		let webfuseSpace;
 
+		function sleep(ms) {
+			return new Promise(resolve => window.setTimeout(resolve, ms));
+		}
+
+		async function getParticipantByIndex(session, index) {
+			if (!session || typeof session.getParticipants !== 'function') return null;
+
+			const participants = await session.getParticipants();
+			return participants && participants[index] ? participants[index] : null;
+		}
+
+		async function makeParticipantHost(session, participantIndex) {
+			let participant = null;
+
+			for (let attempt = 0; attempt < 10; attempt++) {
+				participant = await getParticipantByIndex(session, participantIndex);
+				if (participant) break;
+				await sleep(250);
+			}
+
+			if (!participant) {
+				console.warn('Could not switch host: participant was not found.', { participantIndex });
+				return;
+			}
+
+			if (typeof participant.makeHost === 'function') {
+				await participant.makeHost();
+				return;
+			}
+
+			if (typeof session.makeHost === 'function') {
+				await session.makeHost(participant.id || participant.client_id || participant.clientId);
+				return;
+			}
+
+			console.warn('Could not switch host: no supported makeHost method found.', { session, participant });
+		}
+
 		webfuse.initSpace(
 			'wk_Pn86qJ2_pLRu5oIRqb__xuahzKnROAEv',
 			'1121',
@@ -2430,20 +2468,20 @@
 						session_start_confirmation: true
 					});
 
-					session.on('session_started', async function (session) {
+					session.on('session_started', async function () {
 						await session.openTab(window.location.href);
 						const tabs = await session.getTabs();
+
 						if (tabs.length > 0) {
 							await session.activateTab(tabs[tabs.length - 1].id);
-						} 
+						}
+					});
+
+					session.on('participant_joined', async function () {
+						await makeParticipantHost(session, 1);
 					});
 
 					await session.start();
-
-					session.on('participant_joined', async function (session) {
-						await makeHost(1);
-					});
-
 				} catch (error) {
 					console.error('Failed to start Agent Assist session:', error);
 				}
