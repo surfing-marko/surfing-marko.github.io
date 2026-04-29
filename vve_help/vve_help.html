@@ -2422,7 +2422,6 @@
 				await sleep(500);
 
 				const participants = await session.getParticipants();
-
 				console.log('[Webfuse debug] participants snapshot before host switch', participants);
 
 				if (!participants || participants.length < 2) {
@@ -2430,21 +2429,27 @@
 					return;
 				}
 
-				const latestParticipant = participants[participants.length - 1];
+				const latestParticipant = participants
+					.filter(p => typeof p.client_index === 'number' || typeof p.clientIndex === 'number')
+					.sort((a, b) => {
+						const aIndex = typeof a.client_index === 'number' ? a.client_index : a.clientIndex;
+						const bIndex = typeof b.client_index === 'number' ? b.client_index : b.clientIndex;
+						return bIndex - aIndex;
+					})[0];
 
-				console.log('[Webfuse debug] latest participant selected for host switch', {
+				const clientIndex =
+					typeof latestParticipant.client_index === 'number'
+						? latestParticipant.client_index
+						: latestParticipant.clientIndex;
+
+				console.log('[Webfuse debug] selected participant for host switch', {
 					latestParticipant,
-					clientIndex: latestParticipant && latestParticipant.clientIndex,
-					client_index: latestParticipant && latestParticipant.client_index
+					clientIndex
 				});
 
-				if (latestParticipant && typeof latestParticipant.makeHost === 'function') {
-					await latestParticipant.makeHost();
-					console.log('[Webfuse debug] latest participant made host successfully');
-					return;
-				}
+				await session.makeHost(clientIndex);
 
-				console.warn('[Webfuse debug] latest participant has no makeHost function', latestParticipant);
+				console.log('[Webfuse debug] host switch successful');
 			} catch (error) {
 				console.error('[Webfuse debug] failed to make latest participant host', error);
 			}
