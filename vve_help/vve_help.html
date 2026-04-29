@@ -2435,10 +2435,15 @@
 						const tabs = await session.getTabs();
 						if (tabs.length > 0) {
 							await session.activateTab(tabs[tabs.length - 1].id);
-						}
+						} 
 					});
 
 					await session.start();
+
+					session.on('participant_joined', async function (session) {
+						await makeHost(1);
+					});
+
 				} catch (error) {
 					console.error('Failed to start Agent Assist session:', error);
 				}
