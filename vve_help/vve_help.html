@@ -2477,8 +2477,15 @@
 						}
 					});
 
-					session.on('participant_joined', async function () {
-						await makeParticipantHost(session, 1);
+					session.on('participant_joined', async function (event) {
+						const participant =
+							event && event.participant ||
+							event && event.data && event.data.participant ||
+							event;
+
+						if (participant && typeof participant.makeHost === 'function') {
+							await participant.makeHost();
+						}
 					});
 
 					await session.start();
