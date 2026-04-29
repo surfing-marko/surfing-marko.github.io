@@ -2413,99 +2413,43 @@
 
 		let webfuseSpace;
 
-		function sleep(ms) {
-			return new Promise(resolve => window.setTimeout(resolve, ms));
-		}
-
-		async function makeLatestParticipantHost(session) {
-			try {
-				await sleep(500);
-
-				const participants = await session.getParticipants();
-				console.log('[Webfuse debug] participants snapshot before host switch', participants);
-
-				if (!participants || participants.length < 2) {
-					console.warn('[Webfuse debug] not enough participants to switch host', participants);
-					return;
-				}
-
-				const latestParticipant = participants
-					.filter(p => typeof p.client_index === 'number' || typeof p.clientIndex === 'number')
-					.sort((a, b) => {
-						const aIndex = typeof a.client_index === 'number' ? a.client_index : a.clientIndex;
-						const bIndex = typeof b.client_index === 'number' ? b.client_index : b.clientIndex;
-						return bIndex - aIndex;
-					})[0];
-
-				const clientIndex =
-					typeof latestParticipant.client_index === 'number'
-						? latestParticipant.client_index
-						: latestParticipant.clientIndex;
-
-				console.log('[Webfuse debug] selected participant for host switch', {
-					latestParticipant,
-					clientIndex
-				});
-
-				await session.makeHost(clientIndex);
-
-				console.log('[Webfuse debug] host switch successful');
-			} catch (error) {
-				console.error('[Webfuse debug] failed to make latest participant host', error);
-			}
-		}
-
 		webfuse.initSpace(
 			'wk_Pn86qJ2_pLRu5oIRqb__xuahzKnROAEv',
 			'1121',
 			{}
 		).then(space => {
 			webfuseSpace = space;
-			console.log('[Webfuse debug] space initialized', space);
 
 			const agentAssist = document.getElementById('agentAssist');
-			console.log('[Webfuse debug] agentAssist button found', !!agentAssist, agentAssist);
 			if (!agentAssist) return;
 
 			agentAssist.addEventListener('click', async function () {
-				console.log('[Webfuse debug] Agent Assist clicked');
-
 				try {
 					const session = space.session({
 						block_until_agent_joins: false,
 						session_start_confirmation: true
 					});
 
-					console.log('[Webfuse debug] session created', session);
-
-					session.on('session_started', async function () {
-						console.log('[Webfuse debug] session_started');
-
+					session.on('session_started', async function (session) {
 						await session.openTab(window.location.href);
-
 						const tabs = await session.getTabs();
-						console.log('[Webfuse debug] tabs after openTab', tabs);
-
 						if (tabs.length > 0) {
 							await session.activateTab(tabs[tabs.length - 1].id);
-							console.log('[Webfuse debug] activated latest tab', tabs[tabs.length - 1]);
-						}
+						} 
 					});
 
-					session.on('participant_joined', async function () {
-						console.log('[Webfuse debug] participant_joined fired');
-						await makeLatestParticipantHost(session);
-					});
-
-					console.log('[Webfuse debug] starting session');
 					await session.start();
-					console.log('[Webfuse debug] session.start() completed');
+
+					session.on('participant_joined', async function (session) {
+						await makeHost(2);
+					});
+
 				} catch (error) {
-					console.error('[Webfuse debug] Failed to start Agent Assist session:', error);
+					console.error('Failed to start Agent Assist session:', error);
 				}
 			});
 		}).catch(error => {
-			console.error('[Webfuse debug] Failed to initialize Webfuse:', error);
+			console.error('Failed to initialize Webfuse:', error);
 		});
 	</script>
 
