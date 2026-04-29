@@ -2417,38 +2417,136 @@
 			return new Promise(resolve => window.setTimeout(resolve, ms));
 		}
 
-		async function getParticipantByIndex(session, index) {
-			if (!session || typeof session.getParticipants !== 'function') return null;
-
-			const participants = await session.getParticipants();
-			return participants && participants[index] ? participants[index] : null;
+		function getParticipantId(participant) {
+			return participant && (
+				participant.id ||
+				participant.client_id ||
+				participant.clientId ||
+				participant.participant_id ||
+				participant.participantId
+			);
 		}
 
-		async function makeParticipantHost(session, participantIndex) {
-			let participant = null;
+		function getParticipantClientIndex(participant) {
+			return participant && (
+				participant.clientIndex ||
+				participant.client_index ||
+				participant.clientindex
+			);
+		}
+
+		async function getParticipantsWithDebug(session, source) {
+			if (!session || typeof session.getParticipants !== 'function') {
+				console.warn('[Webfuse debug] session.getParticipants is not available', { source, session });
+				return [];
+			}
+
+			try {
+				const participants = await session.getParticipants();
+				console.log('[Webfuse debug] participants snapshot', {
+					source,
+					count: participants && participants.length,
+					participants
+				});
+				return participants || [];
+			} catch (error) {
+				console.error('[Webfuse debug] failed to get participants', { source, error });
+				return [];
+			}
+		}
+
+		async function findJoinedParticipant(session, event) {
+			const eventParticipant =
+				event && event.participant ||
+				event && event.data && event.data.participant ||
+				event;
+
+			const eventParticipantId = getParticipantId(eventParticipant);
+			const eventClientIndex = getParticipantClientIndex(eventParticipant);
+
+			console.log('[Webfuse debug] participant_joined event payload', {
+				rawEvent: event,
+				eventParticipant,
+				eventParticipantId,
+				eventClientIndex,
+				hasEventMakeHost: !!(eventParticipant && typeof eventParticipant.makeHost === 'function')
+			});
 
 			for (let attempt = 0; attempt < 10; attempt++) {
-				participant = await getParticipantByIndex(session, participantIndex);
-				if (participant) break;
+				const participants = await getParticipantsWithDebug(session, 'participant_joined attempt ' + attempt);
+
+				const matchedParticipant = participants.find(function (participant) {
+					const participantId = getParticipantId(participant);
+					const participantClientIndex = getParticipantClientIndex(participant);
+
+					return (
+						(eventParticipantId && participantId === eventParticipantId) ||
+						(eventClientIndex !== undefined && participantClientIndex === eventClientIndex)
+					);
+				});
+
+				console.log('[Webfuse debug] joined participant match attempt', {
+					attempt,
+					eventParticipantId,
+					eventClientIndex,
+					matchedParticipant
+				});
+
+				if (matchedParticipant) {
+					return matchedParticipant;
+				}
+
+				if (eventParticipant && typeof eventParticipant.makeHost === 'function') {
+					console.log('[Webfuse debug] falling back to event participant with makeHost', eventParticipant);
+					return eventParticipant;
+				}
+
 				await sleep(250);
 			}
 
+			console.warn('[Webfuse debug] could not match joined participant after retries', {
+				event,
+				eventParticipant,
+				eventParticipantId,
+				eventClientIndex
+			});
+
+			return null;
+		}
+
+		async function makeJoinedParticipantHost(session, event) {
+			const participant = await findJoinedParticipant(session, event);
+
+			console.log('[Webfuse debug] selected participant for host transfer', {
+				participant,
+				participantId: getParticipantId(participant),
+				clientIndex: getParticipantClientIndex(participant),
+				hasMakeHost: !!(participant && typeof participant.makeHost === 'function'),
+				hasSessionMakeHost: !!(session && typeof session.makeHost === 'function')
+			});
+
 			if (!participant) {
-				console.warn('Could not switch host: participant was not found.', { participantIndex });
+				console.warn('[Webfuse debug] host transfer skipped: no participant selected');
 				return;
 			}
 
 			if (typeof participant.makeHost === 'function') {
+				console.log('[Webfuse debug] calling participant.makeHost()', participant);
 				await participant.makeHost();
+				console.log('[Webfuse debug] participant.makeHost() completed');
 				return;
 			}
 
 			if (typeof session.makeHost === 'function') {
-				await session.makeHost(participant.id || participant.client_id || participant.clientId);
+				const participantId = getParticipantId(participant);
+				const clientIndex = getParticipantClientIndex(participant);
+				console.log('[Webfuse debug] calling session.makeHost()', { participantId, clientIndex, participant });
+				await session.makeHost(participantId || clientIndex);
+				console.log('[Webfuse debug] session.makeHost() completed');
 				return;
 			}
 
-			console.warn('Could not switch host: no supported makeHost method found.', { session, participant });
+			console.warn('[Webfuse debug] no supported host-transfer method found', { session, participant });
 		}
 
 		webfuse.initSpace(
@@ -2457,44 +2555,54 @@
 			{}
 		).then(space => {
 			webfuseSpace = space;
+			console.log('[Webfuse debug] space initialized', space);
 
 			const agentAssist = document.getElementById('agentAssist');
+			console.log('[Webfuse debug] agentAssist button found', !!agentAssist, agentAssist);
 			if (!agentAssist) return;
 
 			agentAssist.addEventListener('click', async function () {
+				console.log('[Webfuse debug] Agent Assist clicked');
+
 				try {
 					const session = space.session({
 						block_until_agent_joins: false,
 						session_start_confirmation: true
 					});
 
+					console.log('[Webfuse debug] session created', session);
+
 					session.on('session_started', async function () {
+						console.log('[Webfuse debug] session_started');
+
 						await session.openTab(window.location.href);
+						console.log('[Webfuse debug] opened tab', window.location.href);
+
 						const tabs = await session.getTabs();
+						console.log('[Webfuse debug] tabs after openTab', tabs);
 
 						if (tabs.length > 0) {
 							await session.activateTab(tabs[tabs.length - 1].id);
+							console.log('[Webfuse debug] activated latest tab', tabs[tabs.length - 1]);
 						}
+
+						await getParticipantsWithDebug(session, 'session_started');
 					});
 
 					session.on('participant_joined', async function (event) {
-						const participant =
-							event && event.participant ||
-							event && event.data && event.data.participant ||
-							event;
-
-						if (participant && typeof participant.makeHost === 'function') {
-							await participant.makeHost();
-						}
+						console.log('[Webfuse debug] participant_joined fired', event);
+						await makeJoinedParticipantHost(session, event);
 					});
 
+					console.log('[Webfuse debug] starting session');
 					await session.start();
+					console.log('[Webfuse debug] session.start() completed');
 				} catch (error) {
-					console.error('Failed to start Agent Assist session:', error);
+					console.error('[Webfuse debug] Failed to start Agent Assist session:', error);
 				}
 			});
 		}).catch(error => {
-			console.error('Failed to initialize Webfuse:', error);
+			console.error('[Webfuse debug] Failed to initialize Webfuse:', error);
 		});
 	</script>
 
