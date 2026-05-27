@@ -31,7 +31,7 @@
 			}
 			let inactivitySeconds = INACTIVITY_DURATION;
 			console.log(`Inactivity: ${inactivitySeconds} seconds remaining`);
-			session.inactivityInterval = setInterval(function () {
+			session.inactivityInterval = setInterval(function () { 
 				inactivitySeconds--;
 				if (inactivitySeconds > 0) {
 					console.log(`Inactivity: ${inactivitySeconds} seconds remaining`);
