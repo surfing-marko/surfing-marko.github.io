@@ -1,0 +1,67 @@
+/* Example implementation of launching a Webfuse session */
+
+<li class="text-sm">
+	<button id="agentAssist" type="button" style="color:var(--vve-gray-400)">
+		Agent Assist
+	</button>
+</li>
+
+/* end of example */
+
+/* Webfuse script code snippet */
+
+<script>
+	(function (w, d, tag, apiName) {
+		w[apiName] = w[apiName] || {
+			initSpace: function () {
+				return new Promise(resolve => {
+					w[apiName].q = arguments;
+					w[apiName].resolve = resolve;
+				});
+			}
+		};
+
+		const script = d.createElement(tag);
+		script.async = true;
+		script.src = 'https://webfuse.com/surfly.js';
+		(d.head || d.body || d.documentElement).appendChild(script);
+	})(window, document, 'script', 'webfuse');
+
+	let webfuseSpace;
+
+	webfuse.initSpace(
+		'wk_jWKmJW_Vf_0AEXxPy_Q3boErp36QE3f1',
+		'3959',
+		{}
+	).then(space => {
+		webfuseSpace = space;
+
+		const agentAssist = document.getElementById('agentAssist');
+		if (!agentAssist) return;
+
+		agentAssist.addEventListener('click', async function () {
+			try {
+				const session = space.session({
+					block_until_agent_joins: false,
+					session_start_confirmation: true
+				});
+
+				session.on('session_started', async function (session) {
+					await session.openTab(window.location.href);
+					const tabs = await session.getTabs();
+					if (tabs.length > 0) {
+						await session.activateTab(tabs[tabs.length - 1].id);
+					} 
+				});
+
+				await session.start();
+			} catch (error) {
+				console.error('Failed to start Agent Assist session:', error);
+			}
+		});
+	}).catch(error => {
+		console.error('Failed to initialize Webfuse:', error);
+	});
+</script>
+
+/* End of Webfuse code snippet */
